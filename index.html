@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <!-- Διόρθωση Encoding για να μην «σπάνε» ποτέ τα γράμματα -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acropolis AI Interactive Guide</title>
+    <!-- Tailwind CSS & FontAwesome Icons -->
+    <script src="https://tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cloudflare.com">
+</head>
+<body class="bg-slate-900 font-sans flex items-center justify-center min-h-screen p-4">
+
+    <!-- Κεντρικό Πλαίσιο Εφαρμογής (Mobile Style) -->
+    <div class="w-full max-w-sm bg-white rounded-[2.5rem] shadow-2xl overflow-hidden relative flex flex-col justify-between" style="height: 760px;">
+
+        <!-- Header / Πάνω Μέρος -->
+        <div class="p-6 pt-8 flex justify-between items-center z-10">
+            <div class="flex items-center gap-2 text-blue-900">
+                <i class="fa-solid fa-landmark text-xl"></i>
+                <span class="font-bold text-xs tracking-wider uppercase">Acropolis AI</span>
+            </div>
+            <!-- Κουμπί Ρυθμίσεων -->
+            <button id="settingsBtn" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 transition-all shadow-sm">
+                <i class="fa-solid fa-gear text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Κεντρικό Πεδίο -->
+        <div class="px-6 flex-1 flex flex-col items-center justify-start text-center mt-2">
+            <h1 id="welcomeText" class="text-3xl font-extrabold text-blue-950 tracking-tight mb-1">Καλώς ήρθες!</h1>
+            <p id="subWelcomeText" class="text-sm text-slate-400 font-medium mb-6">Έτοιμος να εξερευνήσεις;</p>
+
+            <!-- Κάρτα Μνημείου με Premium SVG Παρθενώνα (Χωρίς στέγη, λείπει ο δεξιός κίονας) -->
+            <div class="w-full bg-gradient-to-b from-blue-50 to-blue-100/40 rounded-3xl p-6 border border-blue-100 shadow-sm relative flex flex-col items-center justify-center min-h-[220px] mb-6">
+                <div class="w-full flex justify-center mb-6">
+                    <svg width="220" height="80" viewBox="0 0 220 80" fill="none" xmlns="http://w3.org">
+                        <!-- Επιστύλιο / Αρχίτραβο (Επίπεδο, χωρίς στέγη) -->
+                        <rect x="10" y="10" width="200" height="10" fill="#1e3a8a" rx="1"/>
+                        <rect x="15" y="22" width="190" height="4" fill="#1e3a8a"/>
+
+                        <!-- Κίονες (Από αριστερά προς τα δεξιά) -->
+                        <line x1="25" y1="26" x2="25" y2="70" stroke="#1e3a8a" stroke-width="7"/>
+                        <line x1="50" y1="26" x2="50" y2="70" stroke="#1e3a8a" stroke-width="7"/>
+                        <line x1="75" y1="26" x2="75" y2="70" stroke="#1e3a8a" stroke-width="7"/>
+                        <line x1="100" y1="26" x2="100" y2="70" stroke="#1e3a8a" stroke-width="7"/>
+                        <line x1="125" y1="26" x2="125" y2="70" stroke="#1e3a8a" stroke-width="7"/>
+                        <line x1="150" y1="26" x2="150" y2="70" stroke="#1e3a8a" stroke-width="7"/>
+                        <line x1="175" y1="26" x2="175" y2="70" stroke="#1e3a8a" stroke-width="7"/>
+
+                        <!-- Ο ακριανός δεξιός κίονας (Κατεστραμμένος / Σπασμένος) -->
+                        <line x1="195" y1="55" x2="195" y2="70" stroke="#1e3a8a" stroke-width="7" stroke-dasharray="2 2"/>
+
+                        <!-- Στυλοβάτης / Βάση -->
+                        <rect x="5" y="70" width="210" height="8" fill="#1e3a8a" rx="1"/>
+                    </svg>
+                </div>
+                <h2 id="cardTitle" class="text-lg font-bold text-blue-950">Ρώτησε ό,τι σε απασχολεί</h2>
+                <p id="cardSubtitle" class="text-xs text-blue-800/80 font-medium mt-1">Η γνώση είναι πάντα δίπλα σου</p>
+            </div>
+
+            <!-- Κεντρικό Πεδίο Εμφάνισης Απάντησης (Αυστηρά 3 γραμμές) -->
+            <div class="w-full px-4 min-h-[5rem] flex items-center justify-center">
+                <p id="responseField" class="text-slate-800 font-semibold text-sm leading-relaxed line-clamp-3 text-center"></p>
+            </div>
+        </div>
+
+        <!-- Κάτω Μέρος: Κεντρικό Στρογγυλό Κουμπί Μικροφώνου -->
+        <div class="pb-12 pt-4 flex flex-col items-center justify-center bg-slate-50 border-t border-slate-100">
+            <button id="micBtn" class="w-20 h-20 rounded-full bg-blue-800 text-white flex items-center justify-center shadow-lg shadow-blue-900/30 hover:scale-105 active:scale-95 transition-all duration-300 border-4 border-white">
+                <i id="micIcon" class="fa-solid fa-microphone text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Επίσημο Full-Screen Modal Ρυθμίσεων (Κλειδώνει πλήρως την οθόνη) -->
+        <div id="settingsModal" class="hidden absolute inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-6">
+            <div class="bg-white w-full rounded-3xl p-6 shadow-2xl border border-slate-100 max-w-xs transform transition-all">
+                <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-3">
+                    <h3 id="modalTitle" class="text-md font-bold text-blue-950 uppercase tracking-wider">Ρυθμίσεις Οδηγού</h3>
+                </div>
+
+                <!-- Γλώσσα -->
+                <div class="mb-5">
+                    <label id="langLabel" class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Γλώσσα Συστήματος</label>
+                    <select id="langSelect" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-800">
+                        <option value="el" selected>Ελληνικά (Greek)</option>
+                        <option value="en">English (Αγγλικά)</option>
+                        <option value="sq">Shqip (Αλβανικά)</option>
+                        <option value="de">Deutsch (Γερμανικά)</option>
+                        <option value="fr">Français (Γαλλικά)</option>
+                        <option value="it">Italiano (Ιταλικά)</option>
+                        <option value="es">Español (Ισπανικά)</option>
+                    </select>
+                </div>
+
+                <!-- Ταχύτητα -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <label id="speedLabel" class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Ταχύτητα Εκφώνησης</label>
+                        <span id="speedValue" class="text-xs font-bold text-blue-800">1.0x</span>
+                    </div>
+                    <input type="range" id="speedRate" min="0.5" max="1.8" step="0.1" value="1.0" class="w-full accent-blue-800 bg-slate-100 h-2 rounded-lg cursor-pointer">
+                </div>
+
+                <!-- Κουμπί Έξοδου & Αποθήκευσης -->
+                <button id="closeSettingsBtn" class="w-full py-3 bg-blue-800 text-white rounded-xl font-bold text-sm hover:bg-blue-900 transition-all shadow-md shadow-blue-800/20">
+                    Αποθήκευση & Κλείσιμο
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Λεξικό Μεταφράσεων Διεπαφής (Interface Dictionary)
+        const translations = {
+            el: { welcome: "Καλώς ήρθες!", subWelcome: "Έτοιμος να εξερευνήσεις;", cardTitle: "Ρώτησε ό,τι σε απασχολεί", cardSub: "Η γνώση είναι πάντα δίπλα σου", modalTitle: "Ρυθμίσεις Οδηγού", langLabel: "Γλώσσα Συστήματος", speedLabel: "Ταχύτητα Εκφώνησης", listening: "Σας ακούω με προσοχή...", offTopic: "Λυπάμαι, ως επίσημος οδηγός της Ακρόπολης, μπορώ να απαντήσω αποκλειστικά σε ερωτήματα που αφορούν τον αρχαιολογικό χώρο και την ιστορία του.", idle: "Δεν ανιχνεύθηκε ομιλία." },
+            en: { welcome: "Welcome!", subWelcome: "Ready to explore?", cardTitle: "Ask anything you want", cardSub: "Knowledge is always by your side", modalTitle: "Guide Settings", langLabel: "System Language", speedLabel: "Speech Rate", listening: "Listening closely...", offTopic: "I am sorry, as the official guide of the Acropolis, I can only answer questions related strictly to the archaeological site and its history.", idle: "No speech detected." },
+            sq: { welcome: "Mirëseerdhët!", subWelcome: "Gati për të eksploruar?", cardTitle: "Pyetni çfarëdo që dëshironi", cardSub: "Njohuria është gjithmonë pranë jush", modalTitle: "Cilësimet e Udhëzuesit", langLabel: "Gjuha e Sistemit", speedLabel: "Shpejtësia", listening: "Duke dëgjuar...", offTopic: "Më vjen keq, si udhërrëfyes zyrtar i Akropolit, unë mund t'u përgjigjem vetëm pyetjeve që lidhen rreptësisht me zonën arkeologjike dhe historinë e saj.", idle: "Nuk u dëgjua asnjë fjalë." }
+        };
+
+        // DOM Elements
+        const micBtn = document.getElementById('micBtn');
+        const micIcon = document.getElementById('micIcon');
+        const responseField = document.getElementById('responseField');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+        const langSelect = document.getElementById('langSelect');
+        const speedRate = document.getElementById('speedRate');
+        const speedValue = document.getElementById('speedValue');
+
+        let isListening = false;
+        let idleTimeout = null;
+        let currentLang = 'el';
+        let recognition = null;
+
+        // Αρχικοποίηση Web Speech API (Αναγνώριση Φωνής)
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false; // Σταματάει μόλις ο χρήστης ολοκληρώσει την πρότασή του
+            recognition.interimResults = false;
+        }
+
+        // Συνάρτηση Δυναμικής Μετάφρασης της Οθόνης
+        function updateLangUI(lang) {
+            currentLang = lang;
+            const t = translations[lang] || translations['en']; // Fallback στα Αγγλικά αν λείπει η μετάφραση
+
+            document.getElementById('welcomeText').textContent = t.welcome;
+            document.getElementById('subWelcomeText').textContent = t.subWelcome;
+            document.getElementById('cardTitle').textContent = t.cardTitle;
+            document.getElementById('cardSubtitle').textContent = t.cardSub;
+            document.getElementById('modalTitle').textContent = t.modalTitle;
+            document.getElementById('langLabel').textContent = t.langLabel;
+            document.getElementById('speedLabel').textContent = t.speedLabel;
+
+            if (recognition) recognition.lang = lang;
+        }
+
+        // Διαχείριση Modal (Κλείδωμα οθόνης & Αποκλειστικότητα)
+        settingsBtn.addEventListener('click', () => {
+            if(!isListening) settingsModal.classList.remove('hidden');
+        });
+        closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+
+        langSelect.addEventListener('change', (e) => updateLangUI(e.target.value));
+        speedRate.addEventListener('input', (e) => speedValue.textContent = e.target.value + 'x');
+
+        // Λογική Μικροφώνου
+        micBtn.addEventListener('click', () => {
+            if (isListening) { stopListening(); } else { startListening(); }
+        });
+
+        function startListening() {
+            isListening = true;
+            window.speechSynthesis.cancel(); // Διακοπή προηγούμενης εκφώνησης αν υπάρχει
+
+            // Αλλαγή σε κόκκινο χρώμα
+            micBtn.classList.replace('bg-blue-800', 'bg-red-600');
+            responseField.textContent = (translations[currentLang] || translations['en']).listening;
+
+            if (recognition) {
+                recognition.start();
+            }
+
+            // Χρονικό όριο 15 δευτερολέπτων αν δεν ανιχνευθεί καθόλου ομιλία
+            idleTimeout = setTimeout(() => {
+                stopListening();
+                responseField.textContent = (translations[currentLang] || translations['en']).idle;
+            }, 15000);
+        }
+
+        function stopListening() {
+            isListening = false;
+            if (idleTimeout) clearTimeout(idleTimeout);
+
+            // Επαναφορά σε επίσημο μπλε χρώμα
+            micBtn.classList.replace('bg-red-600', 'bg-blue-800');
+            if (recognition) { try { recognition.stop(); } catch(e) {} }
+        }
+
+        // Συμπεριφορά Web Speech API κατά την ομιλία
+        if (recognition) {
+            recognition.onresult = (event) => {
+                stopListening();
+                const spokenText = event.results[0][0].transcript;
+                processQuery(spokenText); // Αυτόματη αποστολή ερώτησης
+            };
+
+            // Αυτόματη ανίχνευση παύσης: Μόλις ο χρήστης σταματήσει να μιλάει, το σύστημα κλείνει αυτόματα
+            recognition.onspeechend = () => {
+                stopListening();
+            };
+
+            recognition.onerror = () => stopListening();
+        }
+
+        // Φιλτράρισμα Θεματολογίας (Guardrail) & Παραγωγή Απάντησης
+        function processQuery(text) {
+            const t = translations[currentLang] || translations['en'];
+
+            // Έλεγχος για λέξεις-κλειδιά που σχετίζονται με την Ακρόπολη
+            const keywords = ['ακροπολ', 'παρθεν', 'ερεχθ', 'μνημ', 'ναο', 'κιον', 'ιστορι', 'acropolis', 'parthenon', 'temple', 'history', 'shkëmb', 'kalatë'];
+            const isRelated = keywords.some(k => text.toLowerCase().includes(k));
+
+            if (!isRelated) {
+                // Εκτός θέματος: Ευγενική και αυστηρή άρνηση
+                responseField.textContent = t.offTopic;
+                speak(t.offTopic);
+            } else {
+                // Εντός θέματος: Σημείο σύνδεσης με Gemini / OpenRouter API
+                // Παράγεται επίσημη απάντηση 3 γραμμών ανάλογα με τη γλώσσα
+                let answer = "Ο Παρθενώνας χτίστηκε κατά τον Χρυσό Αιώνα του Περικλή και ήταν αφιερωμένος στην προστάτιδα θεά Αθηνά. Αποτελεί το κορυφαίο σύμβολο της κλασικής αρχιτεκτονικής.";
+
+                if (currentLang === 'en') {
+                    answer = "The Parthenon was built during the Golden Age of Pericles, dedicated to the goddess Athena. It stands as the ultimate symbol of classical architecture.";
+                } else if (currentLang === 'sq') {
+                    answer = "Partenoni u ndërtua gjatë Epokës së Artë të Perikliut, kushtuar perëndeshës Athina. Ai qëndron si simboli suprem i arkitekturës klasike.";
+                }
+
+                responseField.textContent = answer;
+                speak(answer);
+            }
+        }
+
+        // Εκφώνηση Απάντησης (Text-to-Speech)
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = currentLang;
+                utterance.rate = parseFloat(speedRate.value); // Εφαρμογή της ταχύτητας από τις ρυθμίσεις
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+    </script>
+</body>
+</html>
