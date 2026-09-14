@@ -1,0 +1,5654 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Acropolis Intelligent Visitor Assistant">
+
+    <meta
+        name="theme-color"
+        content="#1769e0">
+
+    <title>Acropolis Assistant</title>
+
+
+    <style>
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        html {
+            width: 100%;
+            min-height: 100%;
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+
+            font-family:
+                "Segoe UI",
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f8fbff 0%,
+                    #eaf3ff 100%
+                );
+
+            color: #123b6d;
+
+            overflow: hidden;
+
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+
+        button:focus-visible,
+        select:focus-visible,
+        input:focus-visible {
+            outline: 3px solid rgba(23, 105, 224, 0.25);
+            outline-offset: 3px;
+        }
+
+
+        /* =====================================================
+           APP
+        ===================================================== */
+
+        .app {
+            position: relative;
+
+            width: 100%;
+            min-height: 100vh;
+
+            padding:
+                35px
+                45px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            isolation: isolate;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .header {
+            width: 100%;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            flex-shrink: 0;
+        }
+
+
+        .logo-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .logo-title {
+            color: #123b6d;
+
+            font-size: 24px;
+            font-weight: 800;
+
+            letter-spacing: 3px;
+            line-height: 1.1;
+        }
+
+
+        .logo-subtitle {
+            display: block;
+
+            margin-top: 6px;
+
+            color: #7890aa;
+
+            font-size: 11px;
+            font-weight: 600;
+
+            letter-spacing: 1.2px;
+            line-height: 1.3;
+        }
+
+
+        /* =====================================================
+           SETTINGS BUTTON
+        ===================================================== */
+
+        .settings-button {
+            position: relative;
+            z-index: 10;
+
+            width: 52px;
+            height: 52px;
+
+            border: none;
+            border-radius: 15px;
+
+            background: #06146a;
+            color: #123b6d;
+
+            font-size: 23px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 8px 25px
+                rgba(18, 59, 109, 0.10);
+
+            transition:
+                background 0.25s ease,
+                color 0.25s ease,
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+
+        .settings-button:hover {
+            background: #1769e0;
+            color: #ffffff;
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 12px 30px
+                rgba(23, 105, 224, 0.25);
+        }
+
+
+        .settings-button:active {
+            transform:
+                translateY(0)
+                scale(0.96);
+        }
+
+
+        /* =====================================================
+           ANSWER AREA
+        ===================================================== */
+
+        .answer-container {
+            flex: 1;
+
+            width: 100%;
+            max-width: 900px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding:
+                30px
+                0;
+        }
+
+
+        .answer-box {
+            position: relative;
+
+            width: 100%;
+            min-height: 210px;
+
+            padding: 45px;
+
+            background: rgb(255 253 181);
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.8
+                );
+
+            border-radius: 28px;
+
+            box-shadow:
+                0 20px 60px
+                rgba(18, 59, 109, 0.09);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            overflow: hidden;
+        }
+
+
+        .answer-box::before {
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+            height: 180px;
+
+            top: -90px;
+            right: -90px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(23, 105, 224, 0.035);
+
+            pointer-events: none;
+        }
+
+
+        .answer-content {
+            position: relative;
+            z-index: 1;
+
+            width: 100%;
+        }
+
+
+        .blue-line {
+            width: 45px;
+            height: 4px;
+
+            margin:
+                0 auto
+                20px;
+
+            border-radius: 10px;
+
+            background: #1769e0;
+        }
+        .blue-line.listening {
+    width: 90px;
+    height: 6px;
+
+    background: linear-gradient(
+        90deg,
+        #1769e0,
+        #8BC5FB,
+        #1769e0
+    );
+
+    background-size: 200% 100%;
+
+    animation: listeningWave 1s ease-in-out infinite;
+
+    box-shadow:
+        0 0 12px
+        rgba(23, 105, 224, 0.35);
+}
+
+
+@keyframes listeningWave {
+
+    0% {
+        transform: scaleX(0.65);
+        opacity: 0.65;
+        background-position: 0% 50%;
+    }
+
+    50% {
+        transform: scaleX(1.25);
+        opacity: 1;
+        background-position: 100% 50%;
+    }
+
+    100% {
+        transform: scaleX(0.65);
+        opacity: 0.65;
+        background-position: 0% 50%;
+    }
+
+}
+
+
+.blue-line.processing {
+
+    width: 22px;
+    height: 22px;
+
+    border:
+        3px solid
+        rgba(23, 105, 224, 0.20);
+
+    border-top-color:
+        #1769e0;
+
+    border-radius: 50%;
+
+    background: transparent;
+
+    animation:
+        processingSpin 0.8s linear infinite;
+}
+
+
+@keyframes processingSpin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+        .answer-text {
+            color: #52677f;
+
+            font-size: 19px;
+            font-weight: 400;
+
+            line-height: 1.7;
+
+            word-break: normal;
+            overflow-wrap: break-word;
+
+            transition:
+                opacity 0.2s ease;
+        }
+
+
+        .answer-text.updating {
+            opacity: 0.55;
+        }
+
+
+        /* =====================================================
+           MICROPHONE AREA
+        ===================================================== */
+
+        .microphone-area {
+            width: 100%;
+
+            padding-bottom: 25px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            gap: 15px;
+
+            flex-shrink: 0;
+        }
+
+
+        .microphone-button {
+            position: relative;
+            z-index: 10;
+
+            width: 105px;
+            height: 105px;
+
+            border-radius: 50%;
+
+            border:
+                7px solid
+                rgba(
+                    23,
+                    105,
+                    224,
+                    0.12
+                );
+
+            background: #1769e0;
+            color: #f8e2a5;
+
+            font-size: 36px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 15px 40px
+                rgba(
+                    23,
+                    105,
+                    224,
+                    0.30
+                );
+
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .microphone-button:hover {
+            transform:
+                scale(1.06);
+
+            box-shadow:
+                0 18px 45px
+                rgba(
+                    23,
+                    105,
+                    224,
+                    0.36
+                );
+        }
+
+
+        .microphone-button:active {
+            transform:
+                scale(0.96);
+        }
+
+
+        .microphone-button.active {
+            background: #063665;
+
+            animation:
+                microphonePulse
+                1.5s infinite;
+        }
+
+
+        .microphone-button.inactive {
+            background: #ffffff;
+            color: #1769e0;
+
+            border-color: #dce8f8;
+
+            box-shadow:
+                0 8px 25px
+                rgba(
+                    18,
+                    59,
+                    109,
+                    0.10
+                );
+        }
+
+
+        .microphone-button.processing {
+            background: #4d83c8;
+
+            cursor: wait;
+
+            animation:
+                processingPulse
+                1.2s infinite;
+        }
+
+
+        @keyframes microphonePulse {
+
+            0% {
+                box-shadow:
+                    0 0 0 0
+                    rgba(
+                        23,
+                        105,
+                        224,
+                        0.45
+                    );
+            }
+
+            70% {
+                box-shadow:
+                    0 0 0 22px
+                    rgba(
+                        23,
+                        105,
+                        224,
+                        0
+                    );
+            }
+
+            100% {
+                box-shadow:
+                    0 0 0 0
+                    rgba(
+                        23,
+                        105,
+                        224,
+                        0
+                    );
+            }
+        }
+
+
+        @keyframes processingPulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.65;
+            }
+        }
+
+
+        .microphone-status {
+            min-height: 20px;
+
+            max-width: 90%;
+
+            color: #065FB1;
+
+            font-size: 13px;
+
+            line-height: 1.4;
+
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           SETTINGS OVERLAY
+        ===================================================== */
+
+        .settings-overlay {
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(
+                    18,
+                    59,
+                    109,
+                    0.20
+                );
+
+            backdrop-filter:
+                blur(4px);
+
+            -webkit-backdrop-filter:
+                blur(4px);
+
+            opacity: 0;
+            visibility: hidden;
+
+            transition:
+                opacity 0.3s ease,
+                visibility 0.3s ease;
+
+            z-index: 1000;
+
+            pointer-events: none;
+        }
+
+
+        .settings-overlay.open {
+            opacity: 1;
+            visibility: visible;
+
+            pointer-events: auto;
+        }
+
+
+        /* =====================================================
+           SETTINGS PANEL
+        ===================================================== */
+
+        .settings-panel {
+            position: absolute;
+
+            top: 0;
+            right: 0;
+
+            width: 430px;
+            max-width: 90vw;
+
+            height: 100%;
+
+            padding:
+                35px;
+
+            background: #8BC5FB;
+
+            box-shadow:
+                -15px 0 50px
+                rgba(
+                    18,
+                    59,
+                    109,
+                    0.15
+                );
+
+            transform:
+                translateX(100%);
+
+            transition:
+                transform 0.35s ease;
+
+            overflow-y: auto;
+
+            pointer-events: auto;
+        }
+
+
+        .settings-overlay.open
+        .settings-panel {
+            transform:
+                translateX(0);
+        }
+
+
+        /* =====================================================
+           SETTINGS HEADER
+        ===================================================== */
+
+        .settings-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding-bottom: 25px;
+
+            border-bottom:
+                1px solid
+                #e7edf5;
+        }
+
+
+        .settings-title {
+            color: #123b6d;
+
+            font-size: 25px;
+            font-weight: 750;
+
+            line-height: 1.2;
+        }
+
+
+        .close-button {
+            width: 42px;
+            height: 42px;
+
+            border: none;
+            border-radius: 12px;
+
+            background: #eaf2ff;
+            color: #123b6d;
+
+            font-size: 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+
+        .close-button:hover {
+            background: #1769e0;
+            color: #ffffff;
+        }
+
+
+        .close-button:active {
+            transform:
+                scale(0.95);
+        }
+
+
+        /* =====================================================
+           SETTINGS SECTIONS
+        ===================================================== */
+
+        .setting-section {
+            margin-top: 35px;
+        }
+
+
+        .setting-label {
+            display: block;
+
+            margin-bottom: 10px;
+
+            color: #123b6d;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            line-height: 1.4;
+        }
+
+
+        .setting-description {
+            margin-bottom: 18px;
+
+            color: #7890aa;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =====================================================
+           LANGUAGE SELECT
+        ===================================================== */
+
+        .language-select {
+            width: 100%;
+
+            padding:
+                15px;
+
+            border:
+                1px solid
+                #dce5f0;
+
+            border-radius: 13px;
+
+            background: #ffffff;
+
+            color: #123b6d;
+
+            font-size: 15px;
+
+            outline: none;
+
+            cursor: pointer;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .language-select:hover {
+            border-color:
+                #b8cce6;
+        }
+
+
+        .language-select:focus {
+            border-color:
+                #1769e0;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(
+                    23,
+                    105,
+                    224,
+                    0.08
+                );
+        }
+
+
+        .language-select optgroup {
+            color: #123b6d;
+
+            font-weight: 700;
+        }
+
+
+        .language-select option {
+            color: #123b6d;
+
+            background: #ffffff;
+        }
+
+
+        /* =====================================================
+           SPEED
+        ===================================================== */
+
+        .speed-value {
+            margin-left: 8px;
+
+            color: #1769e0;
+
+            font-weight: 700;
+        }
+
+
+        .speed-slider {
+            width: 100%;
+            height: 6px;
+
+            appearance: none;
+            -webkit-appearance: none;
+
+            border: none;
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    to right,
+                    #1769e0 0%,
+                    #dce8f8 0%
+                );
+
+            cursor: pointer;
+        }
+
+
+        .speed-slider::-webkit-slider-thumb {
+            appearance: none;
+            -webkit-appearance: none;
+
+            width: 21px;
+            height: 21px;
+
+            border-radius: 50%;
+
+            background: #1769e0;
+
+            border:
+                4px solid
+                #ffffff;
+
+            box-shadow:
+                0 3px 10px
+                rgba(
+                    23,
+                    105,
+                    224,
+                    0.30
+                );
+
+            cursor: pointer;
+        }
+
+
+        .speed-slider::-moz-range-thumb {
+            width: 21px;
+            height: 21px;
+
+            border-radius: 50%;
+
+            background: #1769e0;
+
+            border:
+                4px solid
+                #ffffff;
+
+            box-shadow:
+                0 3px 10px
+                rgba(
+                    23,
+                    105,
+                    224,
+                    0.30
+                );
+
+            cursor: pointer;
+        }
+
+
+        .speed-labels {
+            display: flex;
+            justify-content: space-between;
+
+            margin-top: 10px;
+
+            color: #7890aa;
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           ADDITIONAL SETTINGS INFO
+        ===================================================== */
+
+        .settings-info {
+            margin-top: 35px;
+
+            padding:
+                18px;
+
+            border-radius: 16px;
+
+            background:
+                #f5f9ff;
+
+            border:
+                1px solid
+                #e2edfa;
+        }
+
+
+        .settings-info-title {
+            margin-bottom: 7px;
+
+            color: #123b6d;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+
+        .settings-info-text {
+            color: #7890aa;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           RTL
+        ===================================================== */
+
+        html[dir="rtl"] .settings-panel {
+            right: auto;
+            left: 0;
+
+            transform:
+                translateX(-100%);
+
+            box-shadow:
+                15px 0 50px
+                rgba(
+                    18,
+                    59,
+                    109,
+                    0.15
+                );
+        }
+
+
+        html[dir="rtl"]
+        .settings-overlay.open
+        .settings-panel {
+            transform:
+                translateX(0);
+        }
+
+
+        html[dir="rtl"]
+        .speed-value {
+            margin-left: 0;
+            margin-right: 8px;
+        }
+
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .app {
+                padding:
+                    30px
+                    30px;
+            }
+
+
+            .answer-container {
+                max-width:
+                    800px;
+            }
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 650px) {
+
+            body {
+                overflow: hidden;
+            }
+
+
+            .app {
+                padding:
+                    25px
+                    20px;
+            }
+
+
+            .logo-title {
+                font-size: 19px;
+
+                letter-spacing:
+                    2.2px;
+            }
+
+
+            .logo-subtitle {
+                font-size: 9px;
+
+                letter-spacing:
+                    0.8px;
+            }
+
+
+            .settings-button {
+                width: 48px;
+                height: 48px;
+
+                border-radius:
+                    14px;
+            }
+
+
+            .answer-container {
+                padding:
+                    20px
+                    0;
+            }
+
+
+            .answer-box {
+                min-height:
+                    190px;
+
+                padding:
+                    25px
+                    20px;
+
+                border-radius:
+                    23px;
+            }
+
+
+            .answer-text {
+                font-size: 17px;
+
+                line-height:
+                    1.65;
+            }
+
+
+            .microphone-area {
+                padding-bottom:
+                    20px;
+            }
+
+
+            .microphone-button {
+                width: 92px;
+                height: 92px;
+
+                font-size:
+                    31px;
+            }
+
+
+            .settings-panel {
+                width: 100%;
+                max-width: 100%;
+
+                padding:
+                    25px
+                    22px;
+            }
+
+
+            .settings-title {
+                font-size: 22px;
+            }
+
+        }
+
+
+        /* =====================================================
+           SMALL MOBILE
+        ===================================================== */
+
+        @media (max-width: 380px) {
+
+            .app {
+                padding:
+                    20px
+                    15px;
+            }
+
+
+            .logo-title {
+                font-size:
+                    17px;
+            }
+
+
+            .logo-subtitle {
+                font-size:
+                    8px;
+            }
+
+
+            .answer-box {
+                padding:
+                    22px
+                    17px;
+            }
+
+
+            .answer-text {
+                font-size:
+                    16px;
+            }
+
+
+            .microphone-button {
+                width: 86px;
+                height: 86px;
+            }
+
+        }
+
+
+        /* =====================================================
+           REDUCED MOTION
+        ===================================================== */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                scroll-behavior:
+                    auto !important;
+
+                transition-duration:
+                    0.01ms !important;
+
+                animation-duration:
+                    0.01ms !important;
+
+                animation-iteration-count:
+                    1 !important;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         MAIN APPLICATION
+    ===================================================== -->
+
+    <div class="app">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================= -->
+
+        <header class="header">
+
+
+
+
+            <button
+                type="button"
+                id="settingsButton"
+                class="settings-button"
+                title="Settings"
+                aria-label="Settings">
+
+                ⚙️
+
+            </button>
+
+        </header>
+
+
+        <!-- =================================================
+             ANSWER
+        ================================================= -->
+
+        <main class="answer-container">
+
+            <div class="answer-box">
+
+                <div class="answer-content">
+
+                    <div class="blue-line"></div>
+
+
+                    <p
+                        id="answerText"
+                        class="answer-text">
+
+                        Welcome to the Acropolis Assistant.
+                        Ask me anything about the Acropolis.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </main>
+
+
+        <!-- =================================================
+             MICROPHONE
+        ================================================= -->
+
+        <section class="microphone-area">
+
+
+            <button
+                type="button"
+                id="microphoneButton"
+                class="microphone-button inactive"
+                aria-label="Microphone"
+                title="Speak">
+
+                🎙️
+
+            </button>
+
+
+            <span
+                id="microphoneStatus"
+                class="microphone-status">
+
+                Press the microphone to speak
+
+            </span>
+
+
+        </section>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         SETTINGS OVERLAY
+    ===================================================== -->
+
+    <div
+        id="settingsOverlay"
+        class="settings-overlay"
+        aria-hidden="true">
+
+
+        <aside
+            class="settings-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="settingsTitle">
+
+
+            <!-- =============================================
+                 SETTINGS HEADER
+            ============================================== -->
+
+            <div class="settings-header">
+
+
+                <h2
+                    id="settingsTitle"
+                    class="settings-title">
+
+                    Settings
+
+                </h2>
+
+
+                <button
+                    type="button"
+                    id="closeSettings"
+                    class="close-button"
+                    aria-label="Close settings">
+
+                    ✕
+
+                </button>
+
+
+            </div>
+
+
+            <!-- =============================================
+                 LANGUAGE
+            ============================================== -->
+
+            <section class="setting-section">
+
+
+                <label
+                    id="languageLabel"
+                    class="setting-label"
+                    for="languageSelect">
+
+                    System Language
+
+                </label>
+
+
+                <p
+                    id="languageDescription"
+                    class="setting-description">
+
+                    Choose the language you want
+                    the Acropolis Assistant to use.
+
+                </p>
+
+
+                <select
+                    id="languageSelect"
+                    class="language-select">
+
+
+                    <!-- =====================================
+                         EUROPEAN LANGUAGES
+                    ====================================== -->
+
+                    <optgroup
+                        id="europeanLanguages"
+                        label="European Languages">
+
+
+                        <option value="en">
+                            🇬🇧 English
+                        </option>
+
+
+                        <option value="el">
+                            🇬🇷 Ελληνικά
+                        </option>
+
+
+                        <option value="fr">
+                            🇫🇷 Français
+                        </option>
+
+
+                        <option value="de">
+                            🇩🇪 Deutsch
+                        </option>
+
+
+                        <option value="it">
+                            🇮🇹 Italiano
+                        </option>
+
+
+                        <option value="es">
+                            🇪🇸 Español
+                        </option>
+
+
+                        <option value="pt">
+                            🇵🇹 Português
+                        </option>
+
+
+                        <option value="nl">
+                            🇳🇱 Nederlands
+                        </option>
+
+
+                        <option value="sv">
+                            🇸🇪 Svenska
+                        </option>
+
+
+                        <option value="da">
+                            🇩🇰 Dansk
+                        </option>
+
+
+                        <option value="no">
+                            🇳🇴 Norsk
+                        </option>
+
+
+                        <option value="fi">
+                            🇫🇮 Suomi
+                        </option>
+
+
+                        <option value="pl">
+                            🇵🇱 Polski
+                        </option>
+
+
+                        <option value="cs">
+                            🇨🇿 Čeština
+                        </option>
+
+
+                        <option value="sk">
+                            🇸🇰 Slovenčina
+                        </option>
+
+
+                        <option value="hu">
+                            🇭🇺 Magyar
+                        </option>
+
+
+                        <option value="ro">
+                            🇷🇴 Română
+                        </option>
+
+
+                        <option value="bg">
+                            🇧🇬 Български
+                        </option>
+
+
+                        <option value="hr">
+                            🇭🇷 Hrvatski
+                        </option>
+
+
+                        <option value="sl">
+                            🇸🇮 Slovenščina
+                        </option>
+
+
+                        <option value="sr">
+                            🇷🇸 Srpski
+                        </option>
+
+
+                        <option value="uk">
+                            🇺🇦 Українська
+                        </option>
+
+
+                        <option value="tr">
+                            🇹🇷 Türkçe
+                        </option>
+
+
+                    </optgroup>
+
+
+                    <!-- =====================================
+                         NON-EUROPEAN LANGUAGES
+                    ====================================== -->
+
+                    <optgroup
+                        id="nonEuropeanLanguages"
+                        label="Non-European Languages">
+
+
+                        <option value="zh">
+                            🇨🇳 中文
+                        </option>
+
+
+                        <option value="ja">
+                            🇯🇵 日本語
+                        </option>
+
+
+                        <option value="ko">
+                            🇰🇷 한국어
+                        </option>
+
+
+                        <option value="hi">
+                            🇮🇳 हिन्दी
+                        </option>
+
+
+                        <option value="ar">
+                            🇸🇦 العربية
+                        </option>
+
+
+                        <option value="bn">
+                            🇧🇩 বাংলা
+                        </option>
+
+
+                        <option value="id">
+                            🇮🇩 Bahasa Indonesia
+                        </option>
+
+
+                        <option value="vi">
+                            🇻🇳 Tiếng Việt
+                        </option>
+
+
+                        <option value="th">
+                            🇹🇭 ไทย
+                        </option>
+
+
+                        <option value="he">
+                            🇮🇱 עברית
+                        </option>
+
+
+                    </optgroup>
+
+
+                </select>
+
+
+            </section>
+
+
+            <!-- =============================================
+                 NARRATOR SPEED
+            ============================================== -->
+
+            <section class="setting-section">
+
+
+                <label
+                    id="speedLabel"
+                    class="setting-label"
+                    for="speedSlider">
+
+                    Narrator Speed
+
+                    <span
+                        id="speedValue"
+                        class="speed-value">
+
+                        1.0x
+
+                    </span>
+
+                </label>
+
+
+                <p
+                    id="speedDescription"
+                    class="setting-description">
+
+                    Adjust the speaking speed
+                    of the narrator.
+
+                </p>
+
+
+                <input
+                    id="speedSlider"
+                    class="speed-slider"
+                    type="range"
+                    min="0.5"
+                    max="2"
+                    step="0.1"
+                    value="1">
+
+
+                <div class="speed-labels">
+
+
+                    <span id="slowLabel">
+
+                        Slow
+
+                    </span>
+
+
+                    <span id="fastLabel">
+
+                        Fast
+
+                    </span>
+
+
+                </div>
+
+
+            </section>
+
+
+            <!-- =============================================
+                 INFORMATION
+            ============================================== -->
+
+            <div class="settings-info">
+
+
+                <div
+                    id="settingsInfoTitle"
+                    class="settings-info-title">
+
+                    Voice Assistant
+
+                </div>
+
+
+                <p
+                    id="settingsInfoText"
+                    class="settings-info-text">
+
+                    Select your language and press the
+                    microphone button to start speaking
+                    with the Acropolis Assistant.
+
+                </p>
+
+
+            </div>
+
+
+        </aside>
+
+    </div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ===================================================== -->
+
+    <script>
+
+
+        /* =====================================================
+           TRANSLATIONS
+        ===================================================== */
+
+        const translations = {
+
+
+            en: {
+
+                subtitle:
+                    "INTELLIGENT VISITOR ASSISTANT",
+
+                settings:
+                    "Settings",
+
+                language:
+                    "System Language",
+
+                languageDescription:
+                    "Choose the language you want the Acropolis Assistant to use.",
+
+                europeanLanguages:
+                    "European Languages",
+
+                nonEuropeanLanguages:
+                    "Non-European Languages",
+
+                speed:
+                    "Narrator Speed",
+
+                speedDescription:
+                    "Adjust the speaking speed of the narrator.",
+
+                slow:
+                    "Slow",
+
+                fast:
+                    "Fast",
+
+                welcome:
+                    "Welcome to the Acropolis Assistant. Ask me anything about the Acropolis.",
+
+                microphone:
+                    "Press the microphone to speak",
+
+                listening:
+                    "Listening...",
+
+                processing:
+                    "Processing your speech...",
+
+                noSpeech:
+                    "No speech detected. Microphone is paused.",
+
+                speechError:
+                    "Could not access the microphone.",
+
+                unsupported:
+                    "Speech recognition is not supported by this browser.",
+
+                infoTitle:
+                    "Voice Assistant",
+
+                infoText:
+                    "Select your language and press the microphone button to start speaking with the Acropolis Assistant."
+
+            },
+
+
+            el: {
+
+                subtitle:
+                    "ΕΥΦΥΗΣ ΒΟΗΘΟΣ ΕΠΙΣΚΕΠΤΩΝ",
+
+                settings:
+                    "Ρυθμίσεις",
+
+                language:
+                    "Γλώσσα Συστήματος",
+
+                languageDescription:
+                    "Επιλέξτε τη γλώσσα που θέλετε να χρησιμοποιεί ο Βοηθός της Ακρόπολης.",
+
+                europeanLanguages:
+                    "Ευρωπαϊκές Γλώσσες",
+
+                nonEuropeanLanguages:
+                    "Μη Ευρωπαϊκές Γλώσσες",
+
+                speed:
+                    "Ταχύτητα Αφηγητή",
+
+                speedDescription:
+                    "Ρυθμίστε την ταχύτητα ομιλίας του αφηγητή.",
+
+                slow:
+                    "Αργά",
+
+                fast:
+                    "Γρήγορα",
+
+                welcome:
+                    "Καλώς ήρθατε στον Βοηθό της Ακρόπολης. Ρωτήστε με οτιδήποτε σχετικά με την Ακρόπολη.",
+
+                microphone:
+                    "Πατήστε το μικρόφωνο για να μιλήσετε",
+
+                listening:
+                    "Ακούω...",
+
+                processing:
+                    "Επεξεργάζομαι την ομιλία σας...",
+
+                noSpeech:
+                    "Δεν εντοπίστηκε ομιλία. Το μικρόφωνο σταμάτησε.",
+
+                speechError:
+                    "Δεν ήταν δυνατή η πρόσβαση στο μικρόφωνο.",
+
+                unsupported:
+                    "Η αναγνώριση ομιλίας δεν υποστηρίζεται από αυτόν τον browser.",
+
+                infoTitle:
+                    "Φωνητικός Βοηθός",
+
+                infoText:
+                    "Επιλέξτε τη γλώσσα σας και πατήστε το μικρόφωνο για να ξεκινήσετε να μιλάτε με τον Βοηθό της Ακρόπολης."
+
+            },
+
+
+            fr: {
+
+                subtitle:
+                    "ASSISTANT INTELLIGENT POUR LES VISITEURS",
+
+                settings:
+                    "Paramètres",
+
+                language:
+                    "Langue du système",
+
+                languageDescription:
+                    "Choisissez la langue de l'Assistant de l'Acropole.",
+
+                europeanLanguages:
+                    "Langues européennes",
+
+                nonEuropeanLanguages:
+                    "Langues non européennes",
+
+                speed:
+                    "Vitesse du narrateur",
+
+                speedDescription:
+                    "Réglez la vitesse de parole du narrateur.",
+
+                slow:
+                    "Lent",
+
+                fast:
+                    "Rapide",
+
+                welcome:
+                    "Bienvenue dans l'Assistant de l'Acropole. Posez-moi une question sur l'Acropole.",
+
+                microphone:
+                    "Appuyez sur le microphone pour parler",
+
+                listening:
+                    "J'écoute...",
+
+                processing:
+                    "Traitement de votre voix...",
+
+                noSpeech:
+                    "Aucune parole détectée. Le microphone est en pause.",
+
+                speechError:
+                    "Impossible d'accéder au microphone.",
+
+                unsupported:
+                    "La reconnaissance vocale n'est pas prise en charge par ce navigateur.",
+
+                infoTitle:
+                    "Assistant vocal",
+
+                infoText:
+                    "Sélectionnez votre langue et appuyez sur le microphone pour commencer à parler."
+
+            },
+
+
+            de: {
+
+                subtitle:
+                    "INTELLIGENTER BESUCHERASSISTENT",
+
+                settings:
+                    "Einstellungen",
+
+                language:
+                    "Systemsprache",
+
+                languageDescription:
+                    "Wählen Sie die Sprache des Akropolis-Assistenten.",
+
+                europeanLanguages:
+                    "Europäische Sprachen",
+
+                nonEuropeanLanguages:
+                    "Nicht-europäische Sprachen",
+
+                speed:
+                    "Sprechgeschwindigkeit",
+
+                speedDescription:
+                    "Passen Sie die Sprechgeschwindigkeit an.",
+
+                slow:
+                    "Langsam",
+
+                fast:
+                    "Schnell",
+
+                welcome:
+                    "Willkommen beim Akropolis-Assistenten. Fragen Sie mich etwas über die Akropolis.",
+
+                microphone:
+                    "Drücken Sie das Mikrofon, um zu sprechen",
+
+                listening:
+                    "Ich höre zu...",
+
+                processing:
+                    "Ihre Sprache wird verarbeitet...",
+
+                noSpeech:
+                    "Keine Sprache erkannt. Das Mikrofon wurde pausiert.",
+
+                speechError:
+                    "Das Mikrofon konnte nicht verwendet werden.",
+
+                unsupported:
+                    "Spracherkennung wird von diesem Browser nicht unterstützt.",
+
+                infoTitle:
+                    "Sprachassistent",
+
+                infoText:
+                    "Wählen Sie Ihre Sprache und drücken Sie das Mikrofon, um zu sprechen."
+
+            },
+
+
+            it: {
+
+                subtitle:
+                    "ASSISTENTE INTELLIGENTE PER I VISITATORI",
+
+                settings:
+                    "Impostazioni",
+
+                language:
+                    "Lingua del sistema",
+
+                languageDescription:
+                    "Scegli la lingua dell'Assistente dell'Acropoli.",
+
+                europeanLanguages:
+                    "Lingue europee",
+
+                nonEuropeanLanguages:
+                    "Lingue non europee",
+
+                speed:
+                    "Velocità del narratore",
+
+                speedDescription:
+                    "Regola la velocità della voce.",
+
+                slow:
+                    "Lento",
+
+                fast:
+                    "Veloce",
+
+                welcome:
+                    "Benvenuto nell'Assistente dell'Acropoli. Fammi una domanda sull'Acropoli.",
+
+                microphone:
+                    "Premi il microfono per parlare",
+
+                listening:
+                    "Sto ascoltando...",
+
+                processing:
+                    "Elaborazione della voce...",
+
+                noSpeech:
+                    "Nessuna voce rilevata. Il microfono è in pausa.",
+
+                speechError:
+                    "Impossibile accedere al microfono.",
+
+                unsupported:
+                    "Il riconoscimento vocale non è supportato da questo browser.",
+
+                infoTitle:
+                    "Assistente vocale",
+
+                infoText:
+                    "Seleziona la lingua e premi il microfono per iniziare a parlare."
+
+            },
+
+
+            es: {
+
+                subtitle:
+                    "ASISTENTE INTELIGENTE PARA VISITANTES",
+
+                settings:
+                    "Configuración",
+
+                language:
+                    "Idioma del sistema",
+
+                languageDescription:
+                    "Elige el idioma del Asistente de la Acrópolis.",
+
+                europeanLanguages:
+                    "Idiomas europeos",
+
+                nonEuropeanLanguages:
+                    "Idiomas no europeos",
+
+                speed:
+                    "Velocidad del narrador",
+
+                speedDescription:
+                    "Ajusta la velocidad del narrador.",
+
+                slow:
+                    "Lento",
+
+                fast:
+                    "Rápido",
+
+                welcome:
+                    "Bienvenido al Asistente de la Acrópolis. Hazme una pregunta sobre la Acrópolis.",
+
+                microphone:
+                    "Pulsa el micrófono para hablar",
+
+                listening:
+                    "Escuchando...",
+
+                processing:
+                    "Procesando tu voz...",
+
+                noSpeech:
+                    "No se detectó voz. El micrófono está en pausa.",
+
+                speechError:
+                    "No se pudo acceder al micrófono.",
+
+                unsupported:
+                    "El reconocimiento de voz no es compatible con este navegador.",
+
+                infoTitle:
+                    "Asistente de voz",
+
+                infoText:
+                    "Selecciona tu idioma y pulsa el micrófono para comenzar a hablar."
+
+            },
+
+
+            pt: {
+
+                subtitle:
+                    "ASSISTENTE INTELIGENTE PARA VISITANTES",
+
+                settings:
+                    "Definições",
+
+                language:
+                    "Idioma do sistema",
+
+                languageDescription:
+                    "Escolha o idioma do Assistente da Acrópole.",
+
+                europeanLanguages:
+                    "Línguas europeias",
+
+                nonEuropeanLanguages:
+                    "Línguas não europeias",
+
+                speed:
+                    "Velocidade do narrador",
+
+                speedDescription:
+                    "Ajuste a velocidade da voz.",
+
+                slow:
+                    "Lento",
+
+                fast:
+                    "Rápido",
+
+                welcome:
+                    "Bem-vindo ao Assistente da Acrópole. Faça-me uma pergunta sobre a Acrópole.",
+
+                microphone:
+                    "Prima o microfone para falar",
+
+                listening:
+                    "A ouvir...",
+
+                processing:
+                    "A processar a sua voz...",
+
+                noSpeech:
+                    "Não foi detetada fala. O microfone está em pausa.",
+
+                speechError:
+                    "Não foi possível aceder ao microfone.",
+
+                unsupported:
+                    "O reconhecimento de voz não é suportado por este navegador.",
+
+                infoTitle:
+                    "Assistente de voz",
+
+                infoText:
+                    "Selecione o idioma e prima o microfone para começar a falar."
+
+            },
+
+
+            nl: {
+
+                subtitle:
+                    "INTELLIGENTE BEZOEKERSASSISTENT",
+
+                settings:
+                    "Instellingen",
+
+                language:
+                    "Systeemtaal",
+
+                languageDescription:
+                    "Kies de taal van de Acropolis-assistent.",
+
+                europeanLanguages:
+                    "Europese talen",
+
+                nonEuropeanLanguages:
+                    "Niet-Europese talen",
+
+                speed:
+                    "Snelheid van verteller",
+
+                speedDescription:
+                    "Pas de spreeksnelheid aan.",
+
+                slow:
+                    "Langzaam",
+
+                fast:
+                    "Snel",
+
+                welcome:
+                    "Welkom bij de Acropolis-assistent. Stel een vraag over de Akropolis.",
+
+                microphone:
+                    "Druk op de microfoon om te spreken",
+
+                listening:
+                    "Ik luister...",
+
+                processing:
+                    "Je stem wordt verwerkt...",
+
+                noSpeech:
+                    "Geen spraak gedetecteerd. De microfoon staat op pauze.",
+
+                speechError:
+                    "Geen toegang tot de microfoon.",
+
+                unsupported:
+                    "Spraakherkenning wordt niet ondersteund door deze browser.",
+
+                infoTitle:
+                    "Spraakassistent",
+
+                infoText:
+                    "Selecteer uw taal en druk op de microfoon om te beginnen."
+
+            },
+
+
+            sv: {
+
+                subtitle:
+                    "INTELLIGENT BESÖKSASSISTENT",
+
+                settings:
+                    "Inställningar",
+
+                language:
+                    "Systemspråk",
+
+                languageDescription:
+                    "Välj språk för Akropolis-assistenten.",
+
+                europeanLanguages:
+                    "Europeiska språk",
+
+                nonEuropeanLanguages:
+                    "Icke-europeiska språk",
+
+                speed:
+                    "Berättarröstens hastighet",
+
+                speedDescription:
+                    "Justera berättarröstens hastighet.",
+
+                slow:
+                    "Långsam",
+
+                fast:
+                    "Snabb",
+
+                welcome:
+                    "Välkommen till Akropolis-assistenten. Ställ en fråga om Akropolis.",
+
+                microphone:
+                    "Tryck på mikrofonen för att tala",
+
+                listening:
+                    "Lyssnar...",
+
+                processing:
+                    "Bearbetar ditt tal...",
+
+                noSpeech:
+                    "Inget tal upptäcktes. Mikrofonen är pausad.",
+
+                speechError:
+                    "Kunde inte komma åt mikrofonen.",
+
+                unsupported:
+                    "Taligenkänning stöds inte av den här webbläsaren.",
+
+                infoTitle:
+                    "Röstassistent",
+
+                infoText:
+                    "Välj språk och tryck på mikrofonen för att börja prata."
+
+            },
+
+
+            da: {
+
+                subtitle:
+                    "INTELLIGENT BESØGSASSISTENT",
+
+                settings:
+                    "Indstillinger",
+
+                language:
+                    "Systemets sprog",
+
+                languageDescription:
+                    "Vælg sproget for Akropolis-assistenten.",
+
+                europeanLanguages:
+                    "Europæiske sprog",
+
+                nonEuropeanLanguages:
+                    "Ikke-europæiske sprog",
+
+                speed:
+                    "Fortællerens hastighed",
+
+                speedDescription:
+                    "Juster fortællerens talehastighed.",
+
+                slow:
+                    "Langsom",
+
+                fast:
+                    "Hurtig",
+
+                welcome:
+                    "Velkommen til Akropolis-assistenten. Stil et spørgsmål om Akropolis.",
+
+                microphone:
+                    "Tryk på mikrofonen for at tale",
+
+                listening:
+                    "Lytter...",
+
+                processing:
+                    "Behandler din tale...",
+
+                noSpeech:
+                    "Ingen tale registreret. Mikrofonen er sat på pause.",
+
+                speechError:
+                    "Kunne ikke få adgang til mikrofonen.",
+
+                unsupported:
+                    "Talegenkendelse understøttes ikke af denne browser.",
+
+                infoTitle:
+                    "Stemmeassistent",
+
+                infoText:
+                    "Vælg dit sprog og tryk på mikrofonen for at begynde."
+
+            },
+
+
+            no: {
+
+                subtitle:
+                    "INTELLIGENT BESØKSASSISTENT",
+
+                settings:
+                    "Innstillinger",
+
+                language:
+                    "Systemspråk",
+
+                languageDescription:
+                    "Velg språket for Akropolis-assistenten.",
+
+                europeanLanguages:
+                    "Europeiske språk",
+
+                nonEuropeanLanguages:
+                    "Ikke-europeiske språk",
+
+                speed:
+                    "Fortellerhastighet",
+
+                speedDescription:
+                    "Juster talehastigheten.",
+
+                slow:
+                    "Sakte",
+
+                fast:
+                    "Rask",
+
+                welcome:
+                    "Velkommen til Akropolis-assistenten. Still et spørsmål om Akropolis.",
+
+                microphone:
+                    "Trykk på mikrofonen for å snakke",
+
+                listening:
+                    "Lytter...",
+
+                processing:
+                    "Behandler talen din...",
+
+                noSpeech:
+                    "Ingen tale registrert. Mikrofonen er satt på pause.",
+
+                speechError:
+                    "Kunne ikke få tilgang til mikrofonen.",
+
+                unsupported:
+                    "Talegjenkjenning støttes ikke av denne nettleseren.",
+
+                infoTitle:
+                    "Stemmeassistent",
+
+                infoText:
+                    "Velg språk og trykk på mikrofonen for å begynne."
+
+            },
+
+
+            fi: {
+
+                subtitle:
+                    "ÄLYKÄS VIERAILIJA-AVUSTAJA",
+
+                settings:
+                    "Asetukset",
+
+                language:
+                    "Järjestelmän kieli",
+
+                languageDescription:
+                    "Valitse Akropolis-avustajan käyttämä kieli.",
+
+                europeanLanguages:
+                    "Eurooppalaiset kielet",
+
+                nonEuropeanLanguages:
+                    "Euroopan ulkopuoliset kielet",
+
+                speed:
+                    "Kertojan nopeus",
+
+                speedDescription:
+                    "Säädä kertojan puhenopeutta.",
+
+                slow:
+                    "Hidas",
+
+                fast:
+                    "Nopea",
+
+                welcome:
+                    "Tervetuloa Akropolis-avustajaan. Esitä kysymys Akropoliksesta.",
+
+                microphone:
+                    "Paina mikrofonia puhuaksesi",
+
+                listening:
+                    "Kuuntelen...",
+
+                processing:
+                    "Käsittelen puhettasi...",
+
+                noSpeech:
+                    "Puhetta ei havaittu. Mikrofoni on tauolla.",
+
+                speechError:
+                    "Mikrofonia ei voitu käyttää.",
+
+                unsupported:
+                    "Puheentunnistus ei ole tuettu tässä selaimessa.",
+
+                infoTitle:
+                    "Puheavustaja",
+
+                infoText:
+                    "Valitse kieli ja paina mikrofonia aloittaaksesi."
+
+            },
+
+
+            pl: {
+
+                subtitle:
+                    "INTELIGENTNY ASYSTENT ZWIEDZAJĄCYCH",
+
+                settings:
+                    "Ustawienia",
+
+                language:
+                    "Język systemu",
+
+                languageDescription:
+                    "Wybierz język Asystenta Akropolu.",
+
+                europeanLanguages:
+                    "Języki europejskie",
+
+                nonEuropeanLanguages:
+                    "Języki pozaeuropejskie",
+
+                speed:
+                    "Prędkość narratora",
+
+                speedDescription:
+                    "Dostosuj szybkość mowy narratora.",
+
+                slow:
+                    "Wolno",
+
+                fast:
+                    "Szybko",
+
+                welcome:
+                    "Witamy w Asystencie Akropolu. Zadaj mi pytanie dotyczące Akropolu.",
+
+                microphone:
+                    "Naciśnij mikrofon, aby mówić",
+
+                listening:
+                    "Słucham...",
+
+                processing:
+                    "Przetwarzam Twoją mowę...",
+
+                noSpeech:
+                    "Nie wykryto mowy. Mikrofon został wstrzymany.",
+
+                speechError:
+                    "Nie można uzyskać dostępu do mikrofonu.",
+
+                unsupported:
+                    "Rozpoznawanie mowy nie jest obsługiwane przez tę przeglądarkę.",
+
+                infoTitle:
+                    "Asystent głosowy",
+
+                infoText:
+                    "Wybierz język i naciśnij mikrofon, aby rozpocząć."
+
+            },
+
+
+            cs: {
+
+                subtitle:
+                    "INTELIGENTNÍ ASISTENT PRO NÁVŠTĚVNÍKY",
+
+                settings:
+                    "Nastavení",
+
+                language:
+                    "Jazyk systému",
+
+                languageDescription:
+                    "Vyberte jazyk Asistenta Akropole.",
+
+                europeanLanguages:
+                    "Evropské jazyky",
+
+                nonEuropeanLanguages:
+                    "Mimoevropské jazyky",
+
+                speed:
+                    "Rychlost vypravěče",
+
+                speedDescription:
+                    "Upravte rychlost mluvení.",
+
+                slow:
+                    "Pomalu",
+
+                fast:
+                    "Rychle",
+
+                welcome:
+                    "Vítejte v Asistentovi Akropole. Položte mi otázku o Akropoli.",
+
+                microphone:
+                    "Stiskněte mikrofon a začněte mluvit",
+
+                listening:
+                    "Poslouchám...",
+
+                processing:
+                    "Zpracovávám vaši řeč...",
+
+                noSpeech:
+                    "Nebyla rozpoznána žádná řeč. Mikrofon je pozastaven.",
+
+                speechError:
+                    "Nelze získat přístup k mikrofonu.",
+
+                unsupported:
+                    "Rozpoznávání řeči tento prohlížeč nepodporuje.",
+
+                infoTitle:
+                    "Hlasový asistent",
+
+                infoText:
+                    "Vyberte jazyk a stiskněte mikrofon pro zahájení."
+
+            },
+
+
+            sk: {
+
+                subtitle:
+                    "INTELIGENTNÝ ASISTENT PRE NÁVŠTEVNÍKOV",
+
+                settings:
+                    "Nastavenia",
+
+                language:
+                    "Jazyk systému",
+
+                languageDescription:
+                    "Vyberte jazyk Asistenta Akropoly.",
+
+                europeanLanguages:
+                    "Európske jazyky",
+
+                nonEuropeanLanguages:
+                    "Mimoeurópske jazyky",
+
+                speed:
+                    "Rýchlosť rozprávača",
+
+                speedDescription:
+                    "Upravte rýchlosť hovorenia.",
+
+                slow:
+                    "Pomaly",
+
+                fast:
+                    "Rýchlo",
+
+                welcome:
+                    "Vitajte v Asistentovi Akropoly. Položte mi otázku o Akropole.",
+
+                microphone:
+                    "Stlačte mikrofón a začnite hovoriť",
+
+                listening:
+                    "Počúvam...",
+
+                processing:
+                    "Spracúvam vašu reč...",
+
+                noSpeech:
+                    "Nebola zistená žiadna reč. Mikrofón je pozastavený.",
+
+                speechError:
+                    "Nepodarilo sa získať prístup k mikrofónu.",
+
+                unsupported:
+                    "Rozpoznávanie reči tento prehliadač nepodporuje.",
+
+                infoTitle:
+                    "Hlasový asistent",
+
+                infoText:
+                    "Vyberte jazyk a stlačte mikrofón pre začatie."
+
+            },
+
+
+            hu: {
+
+                subtitle:
+                    "INTELLIGENS LÁTOGATÓI ASSZISZTENS",
+
+                settings:
+                    "Beállítások",
+
+                language:
+                    "Rendszernyelv",
+
+                languageDescription:
+                    "Válassza ki az Akropolisz Asszisztens nyelvét.",
+
+                europeanLanguages:
+                    "Európai nyelvek",
+
+                nonEuropeanLanguages:
+                    "Nem európai nyelvek",
+
+                speed:
+                    "Narrátor sebessége",
+
+                speedDescription:
+                    "Állítsa be a narrátor beszédsebességét.",
+
+                slow:
+                    "Lassú",
+
+                fast:
+                    "Gyors",
+
+                welcome:
+                    "Üdvözöljük az Akropolisz Asszisztensben. Tegyen fel kérdést az Akropoliszról.",
+
+                microphone:
+                    "Nyomja meg a mikrofont a beszédhez",
+
+                listening:
+                    "Hallgatom...",
+
+                processing:
+                    "Feldolgozom a beszédét...",
+
+                noSpeech:
+                    "Nem észleltem beszédet. A mikrofon szünetel.",
+
+                speechError:
+                    "Nem sikerült hozzáférni a mikrofonhoz.",
+
+                unsupported:
+                    "A beszédfelismerést ez a böngésző nem támogatja.",
+
+                infoTitle:
+                    "Hangasszisztens",
+
+                infoText:
+                    "Válassza ki a nyelvet, majd nyomja meg a mikrofont."
+
+            },
+
+
+            ro: {
+
+                subtitle:
+                    "ASISTENT INTELIGENT PENTRU VIZITATORI",
+
+                settings:
+                    "Setări",
+
+                language:
+                    "Limba sistemului",
+
+                languageDescription:
+                    "Alegeți limba Asistentului Acropolei.",
+
+                europeanLanguages:
+                    "Limbi europene",
+
+                nonEuropeanLanguages:
+                    "Limbi non-europene",
+
+                speed:
+                    "Viteza naratorului",
+
+                speedDescription:
+                    "Reglați viteza vocii naratorului.",
+
+                slow:
+                    "Lent",
+
+                fast:
+                    "Rapid",
+
+                welcome:
+                    "Bine ați venit la Asistentul Acropolei. Puneți-mi o întrebare despre Acropole.",
+
+                microphone:
+                    "Apăsați microfonul pentru a vorbi",
+
+                listening:
+                    "Ascult...",
+
+                processing:
+                    "Procesez vocea dumneavoastră...",
+
+                noSpeech:
+                    "Nu a fost detectat niciun discurs. Microfonul este pus pe pauză.",
+
+                speechError:
+                    "Nu s-a putut accesa microfonul.",
+
+                unsupported:
+                    "Recunoașterea vocală nu este acceptată de acest browser.",
+
+                infoTitle:
+                    "Asistent vocal",
+
+                infoText:
+                    "Selectați limba și apăsați microfonul pentru a începe."
+
+            },
+
+
+            bg: {
+
+                subtitle:
+                    "ИНТЕЛИГЕНТЕН АСИСТЕНТ ЗА ПОСЕТИТЕЛИ",
+
+                settings:
+                    "Настройки",
+
+                language:
+                    "Език на системата",
+
+                languageDescription:
+                    "Изберете езика на асистента на Акропола.",
+
+                europeanLanguages:
+                    "Европейски езици",
+
+                nonEuropeanLanguages:
+                    "Неевропейски езици",
+
+                speed:
+                    "Скорост на разказвача",
+
+                speedDescription:
+                    "Регулирайте скоростта на гласа.",
+
+                slow:
+                    "Бавно",
+
+                fast:
+                    "Бързо",
+
+                welcome:
+                    "Добре дошли в асистента на Акропола. Задайте ми въпрос за Акропола.",
+
+                microphone:
+                    "Натиснете микрофона, за да говорите",
+
+                listening:
+                    "Слушам...",
+
+                processing:
+                    "Обработвам речта ви...",
+
+                noSpeech:
+                    "Не беше открита реч. Микрофонът е поставен на пауза.",
+
+                speechError:
+                    "Няма достъп до микрофона.",
+
+                unsupported:
+                    "Разпознаването на реч не се поддържа от този браузър.",
+
+                infoTitle:
+                    "Гласов асистент",
+
+                infoText:
+                    "Изберете език и натиснете микрофона, за да започнете."
+
+            },
+
+
+            hr: {
+
+                subtitle:
+                    "INTELIGENTNI ASISTENT ZA POSJETITELJE",
+
+                settings:
+                    "Postavke",
+
+                language:
+                    "Jezik sustava",
+
+                languageDescription:
+                    "Odaberite jezik koji će koristiti Asistent Akropole.",
+
+                europeanLanguages:
+                    "Europski jezici",
+
+                nonEuropeanLanguages:
+                    "Neeuropski jezici",
+
+                speed:
+                    "Brzina pripovjedača",
+
+                speedDescription:
+                    "Prilagodite brzinu govora pripovjedača.",
+
+                slow:
+                    "Sporo",
+
+                fast:
+                    "Brzo",
+
+                welcome:
+                    "Dobro došli u Asistenta Akropole. Postavite mi pitanje o Akropoli.",
+
+                microphone:
+                    "Pritisnite mikrofon za govor",
+
+                listening:
+                    "Slušam...",
+
+                processing:
+                    "Obrađujem vaš govor...",
+
+                noSpeech:
+                    "Govor nije prepoznat. Mikrofon je pauziran.",
+
+                speechError:
+                    "Nije moguće pristupiti mikrofonu.",
+
+                unsupported:
+                    "Prepoznavanje govora nije podržano u ovom pregledniku.",
+
+                infoTitle:
+                    "Glasovni asistent",
+
+                infoText:
+                    "Odaberite jezik i pritisnite mikrofon za početak."
+
+            },
+
+
+            sl: {
+
+                subtitle:
+                    "PAMETNI POMOČNIK ZA OBISKOVALCE",
+
+                settings:
+                    "Nastavitve",
+
+                language:
+                    "Jezik sistema",
+
+                languageDescription:
+                    "Izberite jezik pomočnika Akropole.",
+
+                europeanLanguages:
+                    "Evropski jeziki",
+
+                nonEuropeanLanguages:
+                    "Neevropski jeziki",
+
+                speed:
+                    "Hitrost pripovedovalca",
+
+                speedDescription:
+                    "Prilagodite hitrost govora.",
+
+                slow:
+                    "Počasi",
+
+                fast:
+                    "Hitro",
+
+                welcome:
+                    "Dobrodošli pri pomočniku Akropole. Postavite mi vprašanje o Akropoli.",
+
+                microphone:
+                    "Pritisnite mikrofon za govor",
+
+                listening:
+                    "Poslušam...",
+
+                processing:
+                    "Obdelujem vaš govor...",
+
+                noSpeech:
+                    "Govor ni bil zaznan. Mikrofon je začasno ustavljen.",
+
+                speechError:
+                    "Dostop do mikrofona ni mogoč.",
+
+                unsupported:
+                    "Prepoznavanje govora v tem brskalniku ni podprto.",
+
+                infoTitle:
+                    "Glasovni pomočnik",
+
+                infoText:
+                    "Izberite jezik in pritisnite mikrofon za začetek."
+
+            },
+
+
+            sr: {
+
+                subtitle:
+                    "INTELIGENTNI ASISTENT ZA POSETIOCE",
+
+                settings:
+                    "Podešavanja",
+
+                language:
+                    "Jezik sistema",
+
+                languageDescription:
+                    "Izaberite jezik Asistenta Akropolja.",
+
+                europeanLanguages:
+                    "Evropski jezici",
+
+                nonEuropeanLanguages:
+                    "Neevropski jezici",
+
+                speed:
+                    "Brzina naratora",
+
+                speedDescription:
+                    "Podesite brzinu govora naratora.",
+
+                slow:
+                    "Sporo",
+
+                fast:
+                    "Brzo",
+
+                welcome:
+                    "Dobro došli u Asistenta Akropolja. Postavite mi pitanje o Akropolju.",
+
+                microphone:
+                    "Pritisnite mikrofon da biste govorili",
+
+                listening:
+                    "Slušam...",
+
+                processing:
+                    "Obrađujem vaš govor...",
+
+                noSpeech:
+                    "Govor nije prepoznat. Mikrofon je pauziran.",
+
+                speechError:
+                    "Nije moguće pristupiti mikrofonu.",
+
+                unsupported:
+                    "Prepoznavanje govora nije podržano u ovom pregledaču.",
+
+                infoTitle:
+                    "Glasovni asistent",
+
+                infoText:
+                    "Izaberite jezik i pritisnite mikrofon za početak."
+
+            },
+
+
+            uk: {
+
+                subtitle:
+                    "ІНТЕЛЕКТУАЛЬНИЙ ПОМІЧНИК ДЛЯ ВІДВІДУВАЧІВ",
+
+                settings:
+                    "Налаштування",
+
+                language:
+                    "Мова системи",
+
+                languageDescription:
+                    "Виберіть мову помічника Акрополя.",
+
+                europeanLanguages:
+                    "Європейські мови",
+
+                nonEuropeanLanguages:
+                    "Неєвропейські мови",
+
+                speed:
+                    "Швидкість диктора",
+
+                speedDescription:
+                    "Налаштуйте швидкість мовлення.",
+
+                slow:
+                    "Повільно",
+
+                fast:
+                    "Швидко",
+
+                welcome:
+                    "Ласкаво просимо до помічника Акрополя. Поставте мені запитання про Акрополь.",
+
+                microphone:
+                    "Натисніть мікрофон, щоб говорити",
+
+                listening:
+                    "Слухаю...",
+
+                processing:
+                    "Обробляю вашу мову...",
+
+                noSpeech:
+                    "Мову не виявлено. Мікрофон призупинено.",
+
+                speechError:
+                    "Не вдалося отримати доступ до мікрофона.",
+
+                unsupported:
+                    "Розпізнавання мовлення не підтримується цим браузером.",
+
+                infoTitle:
+                    "Голосовий помічник",
+
+                infoText:
+                    "Виберіть мову та натисніть мікрофон, щоб почати."
+
+            },
+
+
+            tr: {
+
+                subtitle:
+                    "AKILLI ZİYARETÇİ ASİSTANI",
+
+                settings:
+                    "Ayarlar",
+
+                language:
+                    "Sistem Dili",
+
+                languageDescription:
+                    "Akropolis Asistanının kullanacağı dili seçin.",
+
+                europeanLanguages:
+                    "Avrupa Dilleri",
+
+                nonEuropeanLanguages:
+                    "Avrupa Dışı Diller",
+
+                speed:
+                    "Anlatıcı Hızı",
+
+                speedDescription:
+                    "Anlatıcının konuşma hızını ayarlayın.",
+
+                slow:
+                    "Yavaş",
+
+                fast:
+                    "Hızlı",
+
+                welcome:
+                    "Akropolis Asistanına hoş geldiniz. Akropolis hakkında bir soru sorun.",
+
+                microphone:
+                    "Konuşmak için mikrofona basın",
+
+                listening:
+                    "Dinliyorum...",
+
+                processing:
+                    "Konuşmanız işleniyor...",
+
+                noSpeech:
+                    "Konuşma algılanmadı. Mikrofon duraklatıldı.",
+
+                speechError:
+                    "Mikrofona erişilemedi.",
+
+                unsupported:
+                    "Konuşma tanıma bu tarayıcı tarafından desteklenmiyor.",
+
+                infoTitle:
+                    "Sesli Asistan",
+
+                infoText:
+                    "Dilinizi seçin ve konuşmaya başlamak için mikrofona basın."
+
+            },
+
+
+            zh: {
+
+                subtitle:
+                    "智能游客助手",
+
+                settings:
+                    "设置",
+
+                language:
+                    "系统语言",
+
+                languageDescription:
+                    "选择雅典卫城助手使用的语言。",
+
+                europeanLanguages:
+                    "欧洲语言",
+
+                nonEuropeanLanguages:
+                    "非欧洲语言",
+
+                speed:
+                    "旁白速度",
+
+                speedDescription:
+                    "调整旁白的语速。",
+
+                slow:
+                    "慢",
+
+                fast:
+                    "快",
+
+                welcome:
+                    "欢迎使用雅典卫城助手。请询问有关雅典卫城的问题。",
+
+                microphone:
+                    "按下麦克风开始说话",
+
+                listening:
+                    "正在聆听...",
+
+                processing:
+                    "正在处理您的语音...",
+
+                noSpeech:
+                    "未检测到语音。麦克风已暂停。",
+
+                speechError:
+                    "无法访问麦克风。",
+
+                unsupported:
+                    "此浏览器不支持语音识别。",
+
+                infoTitle:
+                    "语音助手",
+
+                infoText:
+                    "选择您的语言，然后按下麦克风开始说话。"
+
+            },
+
+
+            ja: {
+
+                subtitle:
+                    "インテリジェント観光アシスタント",
+
+                settings:
+                    "設定",
+
+                language:
+                    "システム言語",
+
+                languageDescription:
+                    "アクロポリス・アシスタントの言語を選択してください。",
+
+                europeanLanguages:
+                    "ヨーロッパの言語",
+
+                nonEuropeanLanguages:
+                    "ヨーロッパ以外の言語",
+
+                speed:
+                    "ナレーター速度",
+
+                speedDescription:
+                    "ナレーターの話す速度を調整します。",
+
+                slow:
+                    "遅い",
+
+                fast:
+                    "速い",
+
+                welcome:
+                    "アクロポリス・アシスタントへようこそ。アクロポリスについて質問してください。",
+
+                microphone:
+                    "マイクを押して話してください",
+
+                listening:
+                    "聞いています...",
+
+                processing:
+                    "音声を処理しています...",
+
+                noSpeech:
+                    "音声が検出されませんでした。マイクは一時停止しています。",
+
+                speechError:
+                    "マイクにアクセスできませんでした。",
+
+                unsupported:
+                    "このブラウザは音声認識に対応していません。",
+
+                infoTitle:
+                    "音声アシスタント",
+
+                infoText:
+                    "言語を選択し、マイクを押して話し始めてください。"
+
+            },
+
+
+            ko: {
+
+                subtitle:
+                    "지능형 방문객 도우미",
+
+                settings:
+                    "설정",
+
+                language:
+                    "시스템 언어",
+
+                languageDescription:
+                    "아크로폴리스 도우미가 사용할 언어를 선택하세요.",
+
+                europeanLanguages:
+                    "유럽 언어",
+
+                nonEuropeanLanguages:
+                    "비유럽 언어",
+
+                speed:
+                    "내레이터 속도",
+
+                speedDescription:
+                    "내레이터의 말하기 속도를 조정하세요.",
+
+                slow:
+                    "느리게",
+
+                fast:
+                    "빠르게",
+
+                welcome:
+                    "아크로폴리스 도우미에 오신 것을 환영합니다. 아크로폴리스에 대해 질문해 주세요.",
+
+                microphone:
+                    "말하려면 마이크를 누르세요",
+
+                listening:
+                    "듣고 있습니다...",
+
+                processing:
+                    "음성을 처리하고 있습니다...",
+
+                noSpeech:
+                    "음성이 감지되지 않았습니다. 마이크가 일시 중지되었습니다.",
+
+                speechError:
+                    "마이크에 접근할 수 없습니다.",
+
+                unsupported:
+                    "이 브라우저에서는 음성 인식을 지원하지 않습니다.",
+
+                infoTitle:
+                    "음성 도우미",
+
+                infoText:
+                    "언어를 선택하고 마이크를 눌러 말하기를 시작하세요."
+
+            },
+
+
+            hi: {
+
+                subtitle:
+                    "स्मार्ट विज़िटर सहायक",
+
+                settings:
+                    "सेटिंग्स",
+
+                language:
+                    "सिस्टम भाषा",
+
+                languageDescription:
+                    "एक्रोपोलिस सहायक की भाषा चुनें।",
+
+                europeanLanguages:
+                    "यूरोपीय भाषाएँ",
+
+                nonEuropeanLanguages:
+                    "गैर-यूरोपीय भाषाएँ",
+
+                speed:
+                    "वाचक की गति",
+
+                speedDescription:
+                    "वाचक की बोलने की गति समायोजित करें।",
+
+                slow:
+                    "धीमा",
+
+                fast:
+                    "तेज़",
+
+                welcome:
+                    "एक्रोपोलिस सहायक में आपका स्वागत है। एक्रोपोलिस के बारे में कोई प्रश्न पूछें।",
+
+                microphone:
+                    "बोलने के लिए माइक्रोफ़ोन दबाएँ",
+
+                listening:
+                    "सुन रहा हूँ...",
+
+                processing:
+                    "आपकी आवाज़ संसाधित की जा रही है...",
+
+                noSpeech:
+                    "कोई आवाज़ नहीं मिली। माइक्रोफ़ोन रोक दिया गया है।",
+
+                speechError:
+                    "माइक्रोफ़ोन तक पहुँचा नहीं जा सका।",
+
+                unsupported:
+                    "यह ब्राउज़र वाक् पहचान का समर्थन नहीं करता।",
+
+                infoTitle:
+                    "वॉइस असिस्टेंट",
+
+                infoText:
+                    "भाषा चुनें और बोलना शुरू करने के लिए माइक्रोफ़ोन दबाएँ।"
+
+            },
+
+
+            ar: {
+
+                subtitle:
+                    "المساعد الذكي للزوار",
+
+                settings:
+                    "الإعدادات",
+
+                language:
+                    "لغة النظام",
+
+                languageDescription:
+                    "اختر اللغة التي سيستخدمها مساعد الأكروبوليس.",
+
+                europeanLanguages:
+                    "اللغات الأوروبية",
+
+                nonEuropeanLanguages:
+                    "اللغات غير الأوروبية",
+
+                speed:
+                    "سرعة الراوي",
+
+                speedDescription:
+                    "اضبط سرعة تحدث الراوي.",
+
+                slow:
+                    "بطيء",
+
+                fast:
+                    "سريع",
+
+                welcome:
+                    "مرحبًا بك في مساعد الأكروبوليس. اطرح سؤالًا عن الأكروبوليس.",
+
+                microphone:
+                    "اضغط على الميكروفون للتحدث",
+
+                listening:
+                    "أستمع...",
+
+                processing:
+                    "جارٍ معالجة كلامك...",
+
+                noSpeech:
+                    "لم يتم اكتشاف كلام. تم إيقاف الميكروفون مؤقتًا.",
+
+                speechError:
+                    "تعذر الوصول إلى الميكروفون.",
+
+                unsupported:
+                    "التعرف على الكلام غير مدعوم في هذا المتصفح.",
+
+                infoTitle:
+                    "المساعد الصوتي",
+
+                infoText:
+                    "اختر لغتك واضغط على الميكروفون لبدء التحدث."
+
+            },
+
+
+            bn: {
+
+                subtitle:
+                    "স্মার্ট ভিজিটর সহকারী",
+
+                settings:
+                    "সেটিংস",
+
+                language:
+                    "সিস্টেম ভাষা",
+
+                languageDescription:
+                    "অ্যাক্রোপলিস সহকারী কোন ভাষা ব্যবহার করবে তা নির্বাচন করুন।",
+
+                europeanLanguages:
+                    "ইউরোপীয় ভাষা",
+
+                nonEuropeanLanguages:
+                    "অ-ইউরোপীয় ভাষা",
+
+                speed:
+                    "ন্যারেটরের গতি",
+
+                speedDescription:
+                    "ন্যারেটরের কথা বলার গতি পরিবর্তন করুন।",
+
+                slow:
+                    "ধীর",
+
+                fast:
+                    "দ্রুত",
+
+                welcome:
+                    "অ্যাক্রোপলিস সহকারীতে স্বাগতম। অ্যাক্রোপলিস সম্পর্কে একটি প্রশ্ন করুন।",
+
+                microphone:
+                    "কথা বলতে মাইক্রোফোন চাপুন",
+
+                listening:
+                    "শুনছি...",
+
+                processing:
+                    "আপনার কথা প্রক্রিয়া করা হচ্ছে...",
+
+                noSpeech:
+                    "কোনো কথা শনাক্ত হয়নি। মাইক্রোফোন বিরতিতে আছে।",
+
+                speechError:
+                    "মাইক্রোফোনে প্রবেশ করা যায়নি।",
+
+                unsupported:
+                    "এই ব্রাউজারে স্পিচ রিকগনিশন সমর্থিত নয়।",
+
+                infoTitle:
+                    "ভয়েস সহকারী",
+
+                infoText:
+                    "আপনার ভাষা নির্বাচন করুন এবং কথা বলতে মাইক্রোফোন চাপুন।"
+
+            },
+
+
+            id: {
+
+                subtitle:
+                    "ASISTEN PENGUNJUNG CERDAS",
+
+                settings:
+                    "Pengaturan",
+
+                language:
+                    "Bahasa Sistem",
+
+                languageDescription:
+                    "Pilih bahasa yang akan digunakan Asisten Akropolis.",
+
+                europeanLanguages:
+                    "Bahasa Eropa",
+
+                nonEuropeanLanguages:
+                    "Bahasa Non-Eropa",
+
+                speed:
+                    "Kecepatan Narator",
+
+                speedDescription:
+                    "Atur kecepatan bicara narator.",
+
+                slow:
+                    "Lambat",
+
+                fast:
+                    "Cepat",
+
+                welcome:
+                    "Selamat datang di Asisten Akropolis. Ajukan pertanyaan tentang Akropolis.",
+
+                microphone:
+                    "Tekan mikrofon untuk berbicara",
+
+                listening:
+                    "Mendengarkan...",
+
+                processing:
+                    "Memproses suara Anda...",
+
+                noSpeech:
+                    "Tidak ada suara yang terdeteksi. Mikrofon dijeda.",
+
+                speechError:
+                    "Tidak dapat mengakses mikrofon.",
+
+                unsupported:
+                    "Pengenalan suara tidak didukung oleh browser ini.",
+
+                infoTitle:
+                    "Asisten Suara",
+
+                infoText:
+                    "Pilih bahasa Anda dan tekan mikrofon untuk mulai berbicara."
+
+            },
+
+
+            vi: {
+
+                subtitle:
+                    "TRỢ LÝ THÔNG MINH CHO DU KHÁCH",
+
+                settings:
+                    "Cài đặt",
+
+                language:
+                    "Ngôn ngữ hệ thống",
+
+                languageDescription:
+                    "Chọn ngôn ngữ mà Trợ lý Acropolis sẽ sử dụng.",
+
+                europeanLanguages:
+                    "Ngôn ngữ châu Âu",
+
+                nonEuropeanLanguages:
+                    "Ngôn ngữ ngoài châu Âu",
+
+                speed:
+                    "Tốc độ người kể",
+
+                speedDescription:
+                    "Điều chỉnh tốc độ nói của người kể.",
+
+                slow:
+                    "Chậm",
+
+                fast:
+                    "Nhanh",
+
+                welcome:
+                    "Chào mừng bạn đến với Trợ lý Acropolis. Hãy đặt câu hỏi về Acropolis.",
+
+                microphone:
+                    "Nhấn micro để nói",
+
+                listening:
+                    "Đang lắng nghe...",
+
+                processing:
+                    "Đang xử lý giọng nói của bạn...",
+
+                noSpeech:
+                    "Không phát hiện giọng nói. Micro đã tạm dừng.",
+
+                speechError:
+                    "Không thể truy cập micro.",
+
+                unsupported:
+                    "Trình duyệt này không hỗ trợ nhận dạng giọng nói.",
+
+                infoTitle:
+                    "Trợ lý giọng nói",
+
+                infoText:
+                    "Chọn ngôn ngữ và nhấn micro để bắt đầu nói."
+
+            },
+
+
+            th: {
+
+                subtitle:
+                    "ผู้ช่วยอัจฉริยะสำหรับผู้เยี่ยมชม",
+
+                settings:
+                    "การตั้งค่า",
+
+                language:
+                    "ภาษาของระบบ",
+
+                languageDescription:
+                    "เลือกภาษาที่ผู้ช่วยอะโครโพลิสจะใช้",
+
+                europeanLanguages:
+                    "ภาษายุโรป",
+
+                nonEuropeanLanguages:
+                    "ภาษานอกยุโรป",
+
+                speed:
+                    "ความเร็วของผู้บรรยาย",
+
+                speedDescription:
+                    "ปรับความเร็วในการพูดของผู้บรรยาย",
+
+                slow:
+                    "ช้า",
+
+                fast:
+                    "เร็ว",
+
+                welcome:
+                    "ยินดีต้อนรับสู่ผู้ช่วยอะโครโพลิส กรุณาถามคำถามเกี่ยวกับอะโครโพลิส",
+
+                microphone:
+                    "กดไมโครโฟนเพื่อพูด",
+
+                listening:
+                    "กำลังฟัง...",
+
+                processing:
+                    "กำลังประมวลผลเสียงของคุณ...",
+
+                noSpeech:
+                    "ไม่ตรวจพบเสียงพูด ไมโครโฟนถูกหยุดชั่วคราว",
+
+                speechError:
+                    "ไม่สามารถเข้าถึงไมโครโฟนได้",
+
+                unsupported:
+                    "เบราว์เซอร์นี้ไม่รองรับการรู้จำเสียงพูด",
+
+                infoTitle:
+                    "ผู้ช่วยเสียง",
+
+                infoText:
+                    "เลือกภาษาของคุณและกดไมโครโฟนเพื่อเริ่มพูด"
+
+            },
+
+
+            he: {
+
+                subtitle:
+                    "עוזר מבקרים חכם",
+
+                settings:
+                    "הגדרות",
+
+                language:
+                    "שפת המערכת",
+
+                languageDescription:
+                    "בחרו את השפה שבה ישתמש עוזר האקרופוליס.",
+
+                europeanLanguages:
+                    "שפות אירופיות",
+
+                nonEuropeanLanguages:
+                    "שפות שאינן אירופיות",
+
+                speed:
+                    "מהירות הקריינות",
+
+                speedDescription:
+                    "התאימו את מהירות הדיבור של הקריין.",
+
+                slow:
+                    "איטי",
+
+                fast:
+                    "מהיר",
+
+                welcome:
+                    "ברוכים הבאים לעוזר האקרופוליס. שאלו אותי שאלה על האקרופוליס.",
+
+                microphone:
+                    "לחצו על המיקרופון כדי לדבר",
+
+                listening:
+                    "מקשיב...",
+
+                processing:
+                    "מעבד את הדיבור שלכם...",
+
+                noSpeech:
+                    "לא זוהה דיבור. המיקרופון מושהה.",
+
+                speechError:
+                    "לא ניתן לגשת למיקרופון.",
+
+                unsupported:
+                    "זיהוי דיבור אינו נתמך בדפדפן זה.",
+
+                infoTitle:
+                    "עוזר קולי",
+
+                infoText:
+                    "בחרו את השפה ולחצו על המיקרופון כדי להתחיל לדבר."
+
+            }
+
+        };
+
+
+        /* =====================================================
+           ELEMENTS
+        ===================================================== */
+
+        const settingsButton =
+            document.getElementById(
+                "settingsButton"
+            );
+
+
+        const settingsOverlay =
+            document.getElementById(
+                "settingsOverlay"
+            );
+
+
+        const closeSettings =
+            document.getElementById(
+                "closeSettings"
+            );
+
+
+        const languageSelect =
+            document.getElementById(
+                "languageSelect"
+            );
+
+
+        const speedSlider =
+            document.getElementById(
+                "speedSlider"
+            );
+
+
+        const speedValue =
+            document.getElementById(
+                "speedValue"
+            );
+
+
+        const logoSubtitle =
+            document.getElementById(
+                "logoSubtitle"
+            );
+
+
+        const settingsTitle =
+            document.getElementById(
+                "settingsTitle"
+            );
+
+
+        const languageLabel =
+            document.getElementById(
+                "languageLabel"
+            );
+
+
+        const languageDescription =
+            document.getElementById(
+                "languageDescription"
+            );
+
+
+        const speedLabel =
+            document.getElementById(
+                "speedLabel"
+            );
+
+
+        const speedDescription =
+            document.getElementById(
+                "speedDescription"
+            );
+
+
+        const slowLabel =
+            document.getElementById(
+                "slowLabel"
+            );
+
+
+        const fastLabel =
+            document.getElementById(
+                "fastLabel"
+            );
+
+
+        const answerText =
+            document.getElementById(
+                "answerText"
+            );
+        const blueLine =
+            document.querySelector(".blue-line");
+
+        const microphoneButton =
+            document.getElementById(
+                "microphoneButton"
+            );
+
+
+        const microphoneStatus =
+            document.getElementById(
+                "microphoneStatus"
+            );
+
+
+        const europeanLanguages =
+            document.getElementById(
+                "europeanLanguages"
+            );
+
+
+        const nonEuropeanLanguages =
+            document.getElementById(
+                "nonEuropeanLanguages"
+            );
+
+
+        const settingsInfoTitle =
+            document.getElementById(
+                "settingsInfoTitle"
+            );
+
+
+        const settingsInfoText =
+            document.getElementById(
+                "settingsInfoText"
+            );
+
+
+        /* =====================================================
+           STATE
+        ===================================================== */
+
+        let currentLanguage = "en";
+
+        let recognition = null;
+
+        let isListening = false;
+
+        let recognitionStarting = false;
+
+        let speechDetected = false;
+
+        let silenceTimer = null;
+
+        let noSpeechTimer = null;
+
+        let finalTranscript = "";
+
+        let speaking = false;
+
+/* =====================================================
+   START MICROPHONE VISUALIZER
+===================================================== */
+
+async function startMicrophoneVisualizer() {
+
+    try {
+
+        microphoneStream =
+            await navigator.mediaDevices.getUserMedia({
+                audio: true
+            });
+            console.log("MICROPHONE STREAM STARTED");
+
+        audioContext =
+            new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+
+
+        analyser =
+            audioContext.createAnalyser();
+
+
+        analyser.fftSize = 256;
+
+
+        analyser.smoothingTimeConstant = 0.75;
+
+
+        microphoneSource =
+            audioContext.createMediaStreamSource(
+                microphoneStream
+            );
+
+
+        microphoneSource.connect(
+            analyser
+        );
+
+
+        drawMicrophoneWaveform();
+
+        console.log("WAVEFORM STARTED");
+
+    } catch (error) {
+
+        console.error(
+            "Microphone visualizer error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   DRAW REAL WAVEFORM
+===================================================== */
+
+function drawMicrophoneWaveform() {
+
+    if (!analyser) {
+        return;
+    }
+
+
+    const bufferLength =
+        analyser.fftSize;
+
+
+    const dataArray =
+        new Uint8Array(bufferLength);
+
+
+    function draw() {
+
+        waveformAnimation =
+            requestAnimationFrame(draw);
+
+
+        analyser.getByteTimeDomainData(
+            dataArray
+        );
+
+
+        let sum = 0;
+
+
+        for (
+            let i = 0;
+            i < bufferLength;
+            i++
+        ) {
+
+            const value =
+                (dataArray[i] - 128) / 128;
+
+
+            sum += value * value;
+
+        }
+
+
+        const rms =
+            Math.sqrt(
+                sum / bufferLength
+            );
+
+
+        /*
+         * Noise threshold.
+         *
+         * Increase this number if the waveform
+         * reacts to background noise.
+         */
+
+        const threshold = 0.025;
+
+
+        if (rms > threshold) {
+
+            blueLine.classList.add(
+                "listening"
+            );
+
+
+            /*
+             * Convert microphone volume
+             * into a visual scale.
+             */
+
+            const strength =
+                Math.min(
+                    rms * 8,
+                    1
+                );
+
+
+            blueLine.style.setProperty(
+                "--wave-strength",
+                strength
+            );
+
+        } else {
+
+            blueLine.classList.remove(
+                "listening"
+            );
+
+
+            blueLine.style.setProperty(
+                "--wave-strength",
+                0
+            );
+
+        }
+
+    }
+
+
+    draw();
+
+}
+
+
+/* =====================================================
+   STOP MICROPHONE VISUALIZER
+===================================================== */
+
+
+
+
+        /* =====================================================
+           TRANSLATION HELPER
+        ===================================================== */
+
+        function getTexts() {
+
+            return (
+                translations[currentLanguage]
+                ||
+                translations.en
+            );
+
+        }
+
+
+        /* =====================================================
+           APPLY LANGUAGE
+        ===================================================== */
+
+        function applyLanguage(language) {
+
+            if (
+                !translations[language]
+            ) {
+
+                language = "en";
+
+            }
+
+
+            currentLanguage =
+                language;
+
+
+            const text =
+                getTexts();
+
+
+            logoSubtitle.textContent =
+                text.subtitle;
+
+
+            settingsTitle.textContent =
+                text.settings;
+
+
+            languageLabel.textContent =
+                text.language;
+
+
+            languageDescription.textContent =
+                text.languageDescription;
+
+
+            europeanLanguages.label =
+                text.europeanLanguages;
+
+
+            nonEuropeanLanguages.label =
+                text.nonEuropeanLanguages;
+
+
+            speedLabel.childNodes[0]
+                .nodeValue =
+                text.speed + " ";
+
+
+            speedDescription.textContent =
+                text.speedDescription;
+
+
+            slowLabel.textContent =
+                text.slow;
+
+
+            fastLabel.textContent =
+                text.fast;
+
+
+            settingsInfoTitle.textContent =
+                text.infoTitle;
+
+
+            settingsInfoText.textContent =
+                text.infoText;
+
+
+            if (!isListening) {
+
+                answerText.textContent =
+                    text.welcome;
+
+            }
+
+
+            microphoneStatus.textContent =
+                isListening
+                    ? text.listening
+                    : text.microphone;
+
+
+            document.documentElement.lang =
+                language;
+
+
+            if (
+                language === "ar" ||
+                language === "he"
+            ) {
+
+                document.documentElement.dir =
+                    "rtl";
+
+            } else {
+
+                document.documentElement.dir =
+                    "ltr";
+
+            }
+
+
+            try {
+
+                localStorage.setItem(
+                    "acropolisLanguage",
+                    language
+                );
+
+            } catch (error) {
+
+                console.warn(
+                    "Could not save language.",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           LOAD SAVED LANGUAGE
+        ===================================================== */
+
+        function loadSavedLanguage() {
+
+    currentLanguage = "en";
+
+    languageSelect.value = "en";
+
+    applyLanguage("en");
+
+}
+
+
+        /* =====================================================
+           LANGUAGE CHANGE
+        ===================================================== */
+
+        languageSelect.addEventListener(
+            "change",
+            function () {
+
+                const newLanguage =
+                    languageSelect.value;
+
+
+                if (isListening) {
+
+                    stopListening();
+
+                }
+
+
+                window.speechSynthesis.cancel();
+
+
+                applyLanguage(
+                    newLanguage
+                );
+
+            }
+        );
+
+
+        /* =====================================================
+           SETTINGS OPEN
+        ===================================================== */
+
+        function openSettings() {
+
+            settingsOverlay.classList.add(
+                "open"
+            );
+
+
+            settingsOverlay.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+
+
+            setTimeout(
+                function () {
+
+                    languageSelect.focus();
+
+                },
+                100
+            );
+
+        }
+
+
+        /* =====================================================
+           SETTINGS CLOSE
+        ===================================================== */
+
+        function closeSettingsPanel() {
+
+            settingsOverlay.classList.remove(
+                "open"
+            );
+
+
+            settingsOverlay.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+
+            settingsButton.focus();
+
+        }
+
+
+        /* =====================================================
+           SETTINGS EVENTS
+        ===================================================== */
+
+        settingsButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+                openSettings();
+
+            }
+        );
+
+
+        closeSettings.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+                closeSettingsPanel();
+
+            }
+        );
+
+
+        settingsOverlay.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    settingsOverlay
+                ) {
+
+                    closeSettingsPanel();
+
+                }
+
+            }
+        );
+
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key ===
+                    "Escape"
+                ) {
+
+                    if (
+                        settingsOverlay.classList.contains(
+                            "open"
+                        )
+                    ) {
+
+                        closeSettingsPanel();
+
+                    }
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           SPEED
+        ===================================================== */
+
+        function updateSpeedDisplay() {
+
+            const speed =
+                Number(
+                    speedSlider.value
+                );
+
+
+            speedValue.textContent =
+                speed.toFixed(1) + "x";
+
+
+            const min =
+                Number(
+                    speedSlider.min
+                );
+
+
+            const max =
+                Number(
+                    speedSlider.max
+                );
+
+
+            const percentage =
+                (
+                    (speed - min) /
+                    (max - min)
+                ) * 100;
+
+
+            speedSlider.style.background =
+                `linear-gradient(
+                    to right,
+                    #1769e0 ${percentage}%,
+                    #dce8f8 ${percentage}%
+                )`;
+
+        }
+
+
+        speedSlider.addEventListener(
+            "input",
+            function () {
+
+                updateSpeedDisplay();
+
+
+                try {
+
+                    localStorage.setItem(
+                        "acropolisSpeed",
+                        speedSlider.value
+                    );
+
+                } catch (error) {
+
+                    console.warn(
+                        "Could not save speed.",
+                        error
+                    );
+
+                }
+
+            }
+        );
+
+
+        function loadSavedSpeed() {
+
+            let savedSpeed = null;
+
+
+            try {
+
+                savedSpeed =
+                    localStorage.getItem(
+                        "acropolisSpeed"
+                    );
+
+            } catch (error) {
+
+                console.warn(
+                    "Could not read saved speed.",
+                    error
+                );
+
+            }
+
+
+            if (
+                savedSpeed !== null
+            ) {
+
+                const numericSpeed =
+                    Number(savedSpeed);
+
+
+                if (
+                    numericSpeed >= 0.5 &&
+                    numericSpeed <= 2
+                ) {
+
+                    speedSlider.value =
+                        numericSpeed;
+
+                }
+
+            }
+
+
+            updateSpeedDisplay();
+
+        }
+
+
+        /* =====================================================
+           SPEECH LANGUAGE MAP
+        ===================================================== */
+
+        function getSpeechLanguage() {
+
+            const languageMap = {
+
+                en: "en-US",
+                el: "el-GR",
+                fr: "fr-FR",
+                de: "de-DE",
+                it: "it-IT",
+                es: "es-ES",
+                pt: "pt-PT",
+                nl: "nl-NL",
+                sv: "sv-SE",
+                da: "da-DK",
+                no: "no-NO",
+                fi: "fi-FI",
+                pl: "pl-PL",
+                cs: "cs-CZ",
+                sk: "sk-SK",
+                hu: "hu-HU",
+                ro: "ro-RO",
+                bg: "bg-BG",
+                hr: "hr-HR",
+                sl: "sl-SI",
+                sr: "sr-RS",
+                uk: "uk-UA",
+                tr: "tr-TR",
+
+                zh: "zh-CN",
+                ja: "ja-JP",
+                ko: "ko-KR",
+                hi: "hi-IN",
+                ar: "ar-SA",
+                bn: "bn-BD",
+                id: "id-ID",
+                vi: "vi-VN",
+                th: "th-TH",
+                he: "he-IL"
+
+            };
+
+
+            return (
+                languageMap[currentLanguage]
+                ||
+                "en-US"
+            );
+
+        }
+
+
+/* =====================================================
+   SPEECH SYNTHESIS
+===================================================== */
+
+function getSpeechSynthesisLanguage() {
+
+    return getSpeechLanguage();
+
+}
+
+
+function getBestVoice(language) {
+
+    const voices =
+        window.speechSynthesis.getVoices();
+
+    if (!voices.length) {
+
+        return null;
+
+    }
+
+
+    const languageCode =
+        language
+            .split("-")[0]
+            .toLowerCase();
+
+
+    const voice =
+        voices.find(
+            function (voice) {
+
+                return (
+                    voice.lang &&
+                    voice.lang
+                        .toLowerCase()
+                        .startsWith(
+                            languageCode
+                        )
+                );
+
+            }
+        );
+
+
+    return voice || null;
+
+}
+
+
+async function speakText(text) {
+
+    if (!text) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:5001/tts",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    text: text,
+                    language: currentLanguage
+                })
+            }
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "TTS server error: " +
+                response.status
+            );
+
+        }
+
+
+        const audioBlob =
+            await response.blob();
+
+
+        const audioUrl =
+            URL.createObjectURL(
+                audioBlob
+            );
+
+
+        const audio =
+            new Audio(audioUrl);
+
+
+        audio.playbackRate =
+            Number(
+                speedSlider.value
+            );
+
+
+        speaking = true;
+
+
+        audio.onended =
+            function () {
+
+                speaking = false;
+
+                URL.revokeObjectURL(
+                    audioUrl
+                );
+
+            };
+
+
+        audio.onerror =
+            function () {
+
+                speaking = false;
+
+                URL.revokeObjectURL(
+                    audioUrl
+                );
+
+                console.error(
+                    "Audio playback error."
+                );
+
+            };
+
+
+        await audio.play();
+
+    } catch (error) {
+
+        speaking = false;
+
+        console.error(
+            "TTS connection error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   CREATE SPEECH RECOGNITION
+===================================================== */
+        function createRecognition() {
+
+            const SpeechRecognition =
+                window.SpeechRecognition ||
+                window.webkitSpeechRecognition;
+
+
+            if (!SpeechRecognition) {
+
+                recognition =
+                    null;
+
+                return;
+
+            }
+
+
+            recognition =
+                new SpeechRecognition();
+
+
+            recognition.continuous =
+                true;
+
+
+            recognition.interimResults =
+                true;
+
+
+            recognition.maxAlternatives =
+                1;
+
+
+            recognition.lang =
+                getSpeechLanguage();
+
+
+            /* ===============================================
+               ON START
+            =============================================== */
+
+            recognition.onstart =
+                function () {
+
+                    recognitionStarting =
+                        false;
+
+
+                    isListening =
+                        true;
+                    blueLine.style.display = "";
+
+
+
+                    speechDetected =
+                        false;
+
+
+                    finalTranscript =
+                        "";
+
+
+                    microphoneButton
+                        .classList
+                        .add(
+                            "active"
+                        );
+
+
+                    microphoneButton
+                        .classList
+                        .remove(
+                            "inactive"
+                        );
+
+
+                    microphoneButton
+                        .classList
+                        .remove(
+                            "processing"
+                        );
+
+
+                    microphoneStatus.textContent =
+                        getTexts().listening;
+
+
+                    startNoSpeechTimer();
+
+                };
+
+
+            /* ===============================================
+               ON RESULT
+            =============================================== */
+
+            recognition.onresult =
+                function (event) {
+
+                    speechDetected =
+                        true;
+
+
+                    startNoSpeechTimer();
+
+
+                    let interimTranscript =
+                        "";
+
+
+                    let newFinalTranscript =
+                        "";
+
+
+                    for (
+                        let i =
+                            event.resultIndex;
+
+                        i <
+                            event.results.length;
+
+                        i++
+                    ) {
+
+                        const result =
+                            event.results[i];
+
+
+                        const transcript =
+                            result[0]
+                                .transcript;
+
+
+                        if (
+                            result.isFinal
+                        ) {
+
+                            newFinalTranscript +=
+                                transcript +
+                                " ";
+
+                        } else {
+
+                            interimTranscript +=
+                                transcript;
+
+                        }
+
+                    }
+
+
+                    if (
+                        newFinalTranscript.trim()
+                    ) {
+
+                        finalTranscript +=
+                            newFinalTranscript;
+
+                    }
+
+
+                    const visibleText =
+    (
+        finalTranscript +
+        interimTranscript
+    ).trim();
+
+
+                    if (
+                        newFinalTranscript.trim()
+                    ) {
+
+                        clearTimeout(
+                            silenceTimer
+                        );
+
+
+                        silenceTimer =
+                            setTimeout(
+                                function () {
+
+                                    finishSpeech(
+                                        finalTranscript.trim()
+                                    );
+
+                                },
+                                1500
+                            );
+
+                    }
+
+                };
+
+
+            /* ===============================================
+               ON ERROR
+            =============================================== */
+
+            recognition.onerror =
+                function (event) {
+
+                    console.warn(
+                        "Speech recognition error:",
+                        event.error
+                    );
+
+
+                    recognitionStarting =
+                        false;
+
+
+                    if (
+                        event.error ===
+                        "not-allowed"
+                    ) {
+
+                        isListening =
+                            false;
+
+
+                        resetMicrophoneButton();
+
+
+                        microphoneStatus.textContent =
+                            getTexts()
+                                .speechError;
+
+
+                        return;
+
+                    }
+
+
+                    if (
+                        event.error ===
+                        "service-not-allowed"
+                    ) {
+
+                        isListening =
+                            false;
+
+
+                        resetMicrophoneButton();
+
+
+                        microphoneStatus.textContent =
+                            getTexts()
+                                .speechError;
+
+
+                        return;
+
+                    }
+
+
+                    if (
+                        event.error ===
+                        "audio-capture"
+                    ) {
+
+                        isListening =
+                            false;
+
+
+                        resetMicrophoneButton();
+
+
+                        microphoneStatus.textContent =
+                            getTexts()
+                                .speechError;
+
+
+                        return;
+
+                    }
+
+
+                    if (
+                        event.error ===
+                        "no-speech"
+                    ) {
+
+                        microphoneStatus.textContent =
+                            getTexts()
+                                .noSpeech;
+
+                    }
+
+                };
+
+
+            /* ===============================================
+               ON END
+            =============================================== */
+
+            recognition.onend =
+                function () {
+
+                    recognitionStarting =
+                        false;
+
+
+                    if (
+                        !isListening
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    setTimeout(
+                        function () {
+
+                            if (
+                                isListening &&
+                                !recognitionStarting
+                            ) {
+
+                                try {
+
+                                    recognition.lang =
+                                        getSpeechLanguage();
+
+
+                                    recognitionStarting =
+                                        true;
+
+
+                                    recognition.start();
+
+                                } catch (error) {
+
+                                    recognitionStarting =
+                                        false;
+
+
+                                    console.warn(
+                                        "Recognition restart error:",
+                                        error
+                                    );
+
+                                }
+
+                            }
+
+                        },
+                        150
+                    );
+
+                };
+
+        }
+
+
+        /* =====================================================
+           START LISTENING
+        ===================================================== */
+
+        function startListening() {
+
+            if (!recognition) {
+
+                microphoneStatus.textContent =
+                    getTexts()
+                        .unsupported;
+
+                return;
+
+            }
+
+
+            if (
+                isListening ||
+                recognitionStarting
+            ) {
+
+                return;
+
+            }
+
+
+            window.speechSynthesis.cancel();
+
+
+            clearTimeout(
+                silenceTimer
+            );
+
+
+            clearTimeout(
+                noSpeechTimer
+            );
+
+
+            finalTranscript =
+                "";
+
+
+            speechDetected =
+                false;
+
+
+            answerText.textContent =
+                "";
+
+
+            recognition.lang =
+                getSpeechLanguage();
+
+
+            recognitionStarting =
+                true;
+
+
+            try {
+
+                recognition.start();
+
+            } catch (error) {
+
+                recognitionStarting =
+                    false;
+
+
+                console.warn(
+                    "Recognition start error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           STOP LISTENING
+        ===================================================== */
+
+        function stopListening() {
+
+            isListening =
+                false;
+
+
+            recognitionStarting =
+                false;
+
+
+            clearTimeout(
+                silenceTimer
+            );
+
+
+            clearTimeout(
+                noSpeechTimer
+            );
+
+
+            if (recognition) {
+
+                try {
+
+                    recognition.stop();
+
+                } catch (error) {
+
+                    console.warn(
+                        "Recognition stop error:",
+                        error
+                    );
+
+                }
+
+            }
+
+
+            resetMicrophoneButton();
+
+        }
+
+
+        /* =====================================================
+           RESET MICROPHONE
+        ===================================================== */
+
+        function resetMicrophoneButton() {
+
+            microphoneButton
+                .classList
+                .remove(
+                    "active"
+                );
+
+
+            microphoneButton
+                .classList
+                .remove(
+                    "processing"
+                );
+
+
+            microphoneButton
+                .classList
+                .add(
+                    "inactive"
+                );
+
+        }
+
+
+        /* =====================================================
+           NO SPEECH TIMER
+        ===================================================== */
+
+        function startNoSpeechTimer() {
+
+            clearTimeout(
+                noSpeechTimer
+            );
+
+
+            noSpeechTimer =
+                setTimeout(
+                    function () {
+
+                        if (
+                            !speechDetected
+                        ) {
+
+                            stopListening();
+
+
+                            microphoneStatus.textContent =
+                                getTexts()
+                                    .noSpeech;
+
+                        }
+
+                    },
+                    15000
+                );
+
+        }
+
+
+        /* =====================================================
+           FINISH SPEECH
+        ===================================================== */
+
+        function finishSpeech(text) {
+
+            clearTimeout(
+                silenceTimer
+            );
+
+
+            if (
+                !text ||
+                !text.trim()
+            ) {
+
+                return;
+
+            }
+
+
+            const cleanText =
+                text.trim();
+
+
+            stopListening();
+
+
+            microphoneButton
+                .classList
+                .add(
+                    "processing"
+                );
+
+
+            microphoneButton
+                .classList
+                .remove(
+                    "inactive"
+                );
+
+
+            microphoneStatus.textContent =
+                getTexts()
+                    .processing;
+
+
+            answerText.classList.add(
+                "updating"
+            );
+
+
+            /*
+             * =================================================
+             * PLACE FOR YOUR AI BACKEND
+             * =================================================
+             *
+             * Εδώ αργότερα μπορείς να συνδέσεις:
+             *
+             * fetch("/api/ask", {
+             *     method: "POST",
+             *     headers: {
+             *         "Content-Type":
+             *             "application/json"
+             *     },
+             *     body: JSON.stringify({
+             *         message: cleanText,
+             *         language:
+             *             currentLanguage
+             *     })
+             * })
+             *
+             * και να εμφανίσεις την απάντηση.
+             *
+             * Για τώρα χρησιμοποιούμε local response
+             * ώστε το frontend να λειτουργεί αυτόνομα.
+             * =================================================
+             */
+
+
+            setTimeout(
+                 async function () {
+
+                    answerText.classList.remove(
+                        "updating"
+                    );
+
+
+                    /*
+                     * Προσωρινή απάντηση.
+                     * Εδώ θα μπει η πραγματική απάντηση
+                     * από το AI backend.
+                     */
+
+                    const response =
+                        await createLocalResponse(
+                            cleanText
+                        );
+
+                    blueLine.classList.remove("processing");
+                    blueLine.style.display = "none";
+                    answerText.textContent =
+                        response;
+
+
+                    microphoneButton
+                        .classList
+                        .remove(
+                            "processing"
+                        );
+
+
+                    microphoneButton
+                        .classList
+                        .add(
+                            "inactive"
+                        );
+
+
+                    microphoneStatus.textContent =
+                        getTexts()
+                            .microphone;
+
+function getBestVoice(language) {
+
+    const voices =
+        window.speechSynthesis.getVoices();
+
+    if (!voices.length) {
+        return null;
+    }
+
+    const languageCode =
+        language.split("-")[0].toLowerCase();
+
+    let voice =
+        voices.find(function (voice) {
+
+            return (
+                voice.lang &&
+                voice.lang
+                    .toLowerCase()
+                    .startsWith(languageCode)
+            );
+
+        });
+
+    return voice || null;
+}
+                    speakText(
+                        response
+                    );
+
+                },
+                450
+            );
+
+        }
+
+
+        /* =====================================================
+           LOCAL RESPONSE
+        ===================================================== */
+
+async function createLocalResponse(question) {
+
+    const GEMINI_SYSTEM_PROMPT = `
+You are Acropolis Assistant, an intelligent multilingual tourist guide
+specialized in the Acropolis of Athens and its monuments.
+
+Your job is to answer the visitor's question directly and naturally.
+
+IMPORTANT RULES:
+
+1. NEVER repeat the user's question.
+2. NEVER say:
+   - "I understand your question"
+   - "Κατάλαβα την ερώτησή σας"
+   - "You asked..."
+   - "Ρωτήσατε..."
+   - "Your question is..."
+3. NEVER describe what the user asked.
+4. Answer the actual question immediately.
+5. NEVER add a generic sentence such as:
+   "You can ask me anything about the Acropolis."
+6. If the user asks "how was it built?", answer how it was built.
+7. If the user asks "when was it built?", answer when it was built.
+8. If the user asks about the Parthenon, explain the Parthenon.
+9. If the user asks about another Acropolis monument, answer specifically about that monument.
+10. Keep answers suitable for tourists: clear, informative and easy to understand.
+11. Do not invent historical facts.
+12. If you are unsure about a historical fact, say so.
+13. Answer in the SAME LANGUAGE as the user's question.
+14. Do not translate the question before answering it.
+15. Do not mention that you are an AI unless the user specifically asks.
+16. Do not use unnecessary introductions.
+17. Give the visitor the useful information first.
+18. Keep the answer reasonably concise unless the visitor asks for more detail.
+`;
+blueLine.classList.remove("listening");
+blueLine.classList.add("processing");
+    try {
+
+        const response = await fetch(
+            "/ask",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    question: question,
+                    language: currentLanguage,
+
+                })
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                "Gemini request failed: " +
+                response.status
+            );
+        }
+
+        const data = await response.json();
+
+        return (
+            data.answer ||
+            data.text ||
+            "Δεν ήταν δυνατή η λήψη απάντησης."
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Gemini error:",
+            error
+        );
+
+        return (
+            currentLanguage === "el"
+                ? "Δεν ήταν δυνατή η επικοινωνία με την Gemini."
+                : "I couldn't connect to Gemini."
+        );
+
+    }
+
+}
+
+
+        /* =====================================================
+           MICROPHONE BUTTON
+        ===================================================== */
+
+        microphoneButton.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    !recognition
+                ) {
+
+                    microphoneStatus.textContent =
+                        getTexts()
+                            .unsupported;
+
+                    return;
+
+                }
+
+
+                if (
+                    isListening
+                ) {
+
+                    stopListening();
+
+
+                    microphoneStatus.textContent =
+                        getTexts()
+                            .microphone;
+
+
+                    return;
+
+                }
+
+
+                startListening();
+
+            }
+        );
+
+
+        /* =====================================================
+           PAGE VISIBILITY
+        ===================================================== */
+
+        document.addEventListener(
+            "visibilitychange",
+            function () {
+
+                if (
+                    document.hidden
+                ) {
+
+                    if (
+                        isListening
+                    ) {
+
+                        stopListening();
+
+                    }
+
+
+                    window.speechSynthesis.cancel();
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           INITIALIZATION
+        ===================================================== */
+
+        function initializeApplication() {
+
+            loadSavedLanguage();
+
+            loadSavedSpeed();
+
+            createRecognition();
+
+
+            /*
+             * Ενεργοποίηση σωστής κατάστασης
+             * microphone.
+             */
+
+            resetMicrophoneButton();
+
+
+            /*
+             * Αν ο browser δεν υποστηρίζει
+             * Speech Recognition, ενημερώνουμε
+             * διακριτικά τον χρήστη.
+             */
+
+            if (!recognition) {
+
+                microphoneStatus.textContent =
+                    getTexts()
+                        .unsupported;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           START APPLICATION
+        ===================================================== */
+
+        initializeApplication();
+
+
+    </script>
+
+
+</body>
+
+</html>
